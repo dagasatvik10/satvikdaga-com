@@ -12,9 +12,11 @@ interface Props {
   tags: string[];
   readingTime: string;
   devToUrl?: string;
+  githubUrl?: string;
+  demoUrl?: string;
 }
 
-const { backLabel, backHref, title, description, date, tags, readingTime, devToUrl } = Astro.props;
+const { backLabel, backHref, title, description, date, tags, readingTime, devToUrl, githubUrl, demoUrl } = Astro.props;
 
 const dateStr = date.toISOString().slice(0, 10);
 ---
@@ -43,6 +45,21 @@ const dateStr = date.toISOString().slice(0, 10);
             ))}
           </div>
         </div>
+
+        {(githubUrl || demoUrl) && (
+          <div class="flex flex-wrap gap-3 mb-4">
+            {githubUrl && (
+              <a href={githubUrl} target="_blank" rel="noopener" class="text-accent-blue border border-stroke px-4 py-2 rounded-md text-[14px] hover:border-accent-blue">
+                GitHub ↗
+              </a>
+            )}
+            {demoUrl && (
+              <a href={demoUrl} target="_blank" rel="noopener" class="text-accent-green border border-stroke px-4 py-2 rounded-md text-[14px] hover:border-accent-green">
+                Live demo ↗
+              </a>
+            )}
+          </div>
+        )}
 
         {devToUrl && (
           <p class="text-fg-muted text-[14px]">
