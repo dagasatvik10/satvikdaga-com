@@ -347,3 +347,25 @@
 - Post.astro is a layout, not a component — it wraps MDX pages via <slot /> and is referenced by [slug].astro pages
 - Footer contact strip is intentionally inline (not reusing Contact.astro) because the component includes a section label/heading that doesn't belong in a post footer
 - date.toISOString().slice(0, 10) produces YYYY-MM-DD from the Zod-coerced Date object passed from frontmatter
+
+---
+
+## 2026-04-16T07:01:00Z - US-017
+
+**Implemented**
+
+- Created src/content/blog/hello-world.mdx with title, date (2026-04-16), description, tags ['llm', 'ai'], draft: false, 500+ word body
+- Created src/content/blog/draft-post.mdx with draft: true (no route generated)
+- Created src/content/projects/rag-eval.mdx with title, description, tags ['python', 'rag', 'llm'], date (2026-04-10), featured: true, draft: false, 600+ word body, githubUrl present
+
+**Files Changed**
+
+- src/content/blog/hello-world.mdx
+- src/content/blog/draft-post.mdx
+- src/content/projects/rag-eval.mdx
+
+**Learnings**
+
+- MDX files only need to be present in src/content/<collection>/ for getCollection() to find them — no registration required
+- Build warns about empty collections at the index.astro stage but succeeds; adding MDX files eliminates those warnings
+- draft: true in frontmatter does not generate a 404 page at build time; the route simply does not exist in the static output
