@@ -481,3 +481,26 @@
 
 - Astro treats src/pages/404.astro as a special file — outputs /404.html automatically, no config needed
 - 404.astro is a singleton (no getStaticPaths); simplest possible page pattern in the project
+
+---
+
+## 2026-04-16T07:12:00Z - US-023
+
+**Implemented**
+
+- Created public/favicon.svg: 32x32 viewBox, rect fill='#0d1117' rx=4, text 'sd.' centered at (16,22) fill='#58a6ff' JetBrains Mono Bold 14px, @font-face declared inside <defs><style>
+- Created public/og-default.png: 1200x630 solid #0d1117 PNG generated via Python stdlib (zlib+struct, no Pillow)
+- Created public/favicon.ico: copy of favicon.svg (PRD allows this; browser uses /favicon.svg via <link rel='icon'>)
+- Base.astro already had <link rel='icon' href='/favicon.svg'> at line 34 — no change needed
+
+**Files Changed**
+
+- public/favicon.svg
+- public/favicon.ico
+- public/og-default.png
+
+**Learnings**
+
+- Minimal valid PNG requires: 8-byte PNG signature + IHDR chunk + IDAT chunk (zlib-compressed filter-0 scanlines) + IEND chunk — Python stdlib (zlib, struct) is sufficient, no Pillow needed
+- SVG @font-face inside <defs><style> references local font paths; only renders correctly when served (not file://) since browser fetches the woff2 via the declared src URL
+- favicon.ico can be any valid file when a <link rel='icon' href='/favicon.svg'> is present — browsers use the explicit link; the .ico is only fetched if no link tag is found
