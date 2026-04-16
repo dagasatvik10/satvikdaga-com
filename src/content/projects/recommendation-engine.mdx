@@ -1,0 +1,50 @@
+---
+title: "Advanced Recommendation Engine"
+description: "Dual recommender systems combining collaborative filtering and graph embeddings, serving 2M+ monthly active users with 20% engagement lift."
+tags: ["python", "tensorflow", "kubernetes"]
+date: "2024-06-15"
+featured: true
+draft: false
+githubUrl: "https://github.com/dagasatvik10/recommendation-engine"
+---
+
+# Advanced Recommendation Engine
+
+Recommendation systems are the backbone of user engagement in consumer-facing products. This project implements a dual recommender architecture — content-based filtering combined with collaborative filtering — deployed on Kubernetes at production scale.
+
+## Architecture
+
+The system has two parallel recommendation pathways that are blended at serving time:
+
+**Content-Based Pathway**
+
+Item features (cuisine type, price range, location, rating) are encoded into dense embeddings. For cold-start items with no interaction history, this pathway provides reasonable recommendations based on item metadata alone.
+
+**Collaborative Filtering Pathway**
+
+User-item interaction data flows through a TensorFlow-Recommenders model trained on implicit feedback (clicks, bookmarks, bookings). The model learns user and item embeddings in a shared vector space where cosine similarity predicts preference.
+
+**Graph Embeddings with Cleora**
+
+Beyond the standard matrix factorization approach, I incorporated Cleora graph embeddings to capture higher-order relationships. Items frequently co-visited or co-booked form edges in a bipartite graph, and Cleora produces embeddings that encode this structural information. This proved especially valuable for serendipitous recommendations — surfacing items users wouldn't find through simple similarity matching.
+
+## Serving Infrastructure
+
+Model serving uses KServe on Kubernetes, providing:
+
+- **Autoscaling**: Scales from 2 to 20 replicas based on request throughput
+- **Canary deployments**: New model versions roll out to 10% of traffic first
+- **A/B testing framework**: Configurable traffic splits for offline evaluation of model variants
+- **Latency**: P99 inference latency under 100ms at peak load
+
+The serving pipeline processes 1M+ daily events with 2M+ monthly active users.
+
+## Results
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Click-through rate | Baseline | +20% |
+| Booking conversion | Baseline | +15% |
+| Cold-start coverage | 40% | 78% |
+
+The graph embedding component was responsible for most of the cold-start improvement — items with fewer than 10 interactions saw a 2x improvement in recommendation quality.

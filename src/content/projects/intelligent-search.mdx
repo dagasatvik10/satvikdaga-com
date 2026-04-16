@@ -1,0 +1,58 @@
+---
+title: "Intelligent Search System"
+description: "Semantic search powered by Hugging Face transformers and LangChain with Elasticsearch as a vector database, handling 100K+ daily queries with 40% fewer irrelevant results."
+tags: ["python", "nlp", "elasticsearch"]
+date: "2023-03-10"
+featured: true
+draft: false
+githubUrl: "https://github.com/dagasatvik10/intelligent-search"
+---
+
+# Intelligent Search System
+
+Keyword search fails when users describe what they want in natural language. "Good Italian place for a date night near me" returns nothing useful with BM25 alone because the match is semantic, not lexical. This project bridges that gap.
+
+## Architecture
+
+The search pipeline has two retrieval stages followed by a ranking stage:
+
+**Stage 1 — Lexical Retrieval (BM25)**
+
+Standard Elasticsearch full-text search provides a fast first pass. This catches exact matches on restaurant names, cuisines, and locations. Results are returned in under 50ms.
+
+**Stage 2 — Semantic Retrieval (Vector Search)**
+
+User queries pass through a Hugging Face sentence-transformer model to produce dense embeddings. These embeddings are matched against pre-computed document embeddings stored in Elasticsearch's dense vector index using cosine similarity.
+
+LangChain orchestrates the query pipeline — handling query preprocessing, embedding generation, and result fusion from both retrieval stages.
+
+**Stage 3 — Cross-Encoder Reranking**
+
+Top candidates from both retrieval stages are reranked by a cross-encoder that jointly encodes the query and document. This is slower but more accurate, so it only runs on the top 20 candidates.
+
+## Vector Index Construction
+
+Document embeddings are pre-computed offline using a sentence-transformer model fine-tuned on restaurant review data. Each document is encoded as a 384-dimensional vector and indexed in Elasticsearch with the `dense_vector` field type.
+
+The index is rebuilt nightly to incorporate new restaurants and updated reviews. Incremental updates would be faster but introduce consistency issues — the nightly rebuild guarantees a uniform embedding space.
+
+## Query Processing
+
+Natural language queries go through:
+
+1. **Intent classification**: Is this a location query, a cuisine query, or a vibe query?
+2. **Entity extraction**: Pull out cuisine types, price ranges, neighborhood names.
+3. **Query expansion**: Augment the query with synonyms and related terms.
+
+This preprocessing significantly improves retrieval recall for conversational queries.
+
+## Results
+
+| Metric | Before (BM25 only) | After (Hybrid) |
+|--------|-------------------|-----------------|
+| Irrelevant results | Baseline | -40% |
+| User engagement | Baseline | +20% |
+| Daily queries | 100K+ | 100K+ |
+| P95 latency | 120ms | 180ms |
+
+The 60ms latency increase from adding semantic retrieval was acceptable given the 40% reduction in irrelevant results. Users finding what they want faster more than compensates for the slight per-query slowdown.

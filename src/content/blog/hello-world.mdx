@@ -1,55 +1,55 @@
 ---
-title: "Getting Started with LLM Evaluation"
+title: "Building Recommendation Systems That Scale"
 date: "2026-04-16"
-description: "A practical introduction to evaluating large language models — from benchmark selection to building custom eval pipelines."
-tags: ["llm", "ai"]
+description: "Lessons learned deploying dual-pathway recommender systems — collaborative filtering, graph embeddings, and the infrastructure needed to serve 2M+ users."
+tags: ["ml", "recommendations"]
 draft: false
 ---
 
-# Getting Started with LLM Evaluation
+# Building Recommendation Systems That Scale
 
-Evaluating large language models is one of the most important — and most misunderstood — parts of building production AI systems. In this post I want to walk through the core concepts, common pitfalls, and practical patterns I've learned building evaluation pipelines at scale.
+Most recommendation system tutorials stop at "train a model, get predictions." Production recommenders are a different beast — they need to handle cold starts, serve predictions under 100ms, retrain on fresh data, and degrade gracefully when things go wrong. Here's what I've learned building these systems at scale.
 
-## Why Evaluation Is Hard
+## The Cold Start Problem Is Real
 
-The fundamental challenge with LLM evaluation is that language is ambiguous. When a model generates text, there is rarely a single correct answer. A factual question like "What is the capital of France?" has an obvious ground truth, but most real-world tasks — summarization, code generation, reasoning — do not.
+Collaborative filtering works beautifully when you have rich interaction data. But new users have no history. New items have no interactions. If your system can't handle either case, you've built a recommender that works for your most engaged users and fails for everyone else.
 
-This ambiguity means we need multiple evaluation strategies layered together, each capturing a different signal.
+The pragmatic solution is a hybrid approach: combine collaborative filtering with content-based features. When interaction data is sparse, fall back to item metadata (cuisine type, price range, location). The content pathway won't produce serendipitous recommendations, but it will produce reasonable ones.
 
-## The Three Pillars of LLM Evaluation
+## Graph Embeddings Capture What Matrix Factorization Misses
 
-### 1. Reference-Based Metrics
+Standard collaborative filtering treats interactions as a user-item matrix. But interactions form a graph — users who visit Restaurant A also visit Restaurant B. Items co-booked share structural relationships that matrix factorization can't capture.
 
-These compare model output against a gold-standard reference. Classic examples include BLEU for translation and ROUGE for summarization. They are fast and deterministic, but they penalize valid paraphrases and reward surface-level overlap over semantic correctness.
+I use Cleora for graph embeddings because it's fast, handles bipartite graphs natively, and produces embeddings that encode neighborhood structure. The key insight is that graph embeddings excel at serendipity — surfacing items that are structurally similar even if their metadata looks different.
 
-Use reference-based metrics when you have high-quality labeled data and the output space is constrained — for example, extractive question answering where the answer must appear verbatim in a source document.
+In production, blending graph embeddings with collaborative filtering embeddings improved cold-start recommendation quality by 2x.
 
-### 2. Model-Based Evaluation
+## Serving Latency Is a Product Decision
 
-LLM-as-judge has become the dominant approach for open-ended generation tasks. You prompt a strong model (GPT-4, Claude 3.5 Sonnet) with the task, the model output, and a rubric, then ask it to score or compare responses.
+Your model might produce perfect recommendations, but if it takes 500ms to serve them, users will scroll past. At 2M+ monthly active users with traffic spikes during meal times, we targeted P99 latency under 100ms.
 
-The key insight here is that you are not measuring absolute quality — you are measuring relative quality. Pairwise comparisons ("which of these two responses is better?") are more reliable than absolute scoring because they reduce position bias and anchor effects.
+This meant:
 
-### 3. Behavioral Testing
+- **Pre-computing embeddings** during offline training rather than computing them at inference time
+- **Using KServe on Kubernetes** with autoscaling from 2 to 20 replicas
+- **Caching popular recommendations** — the top 10% of items account for 60% of requests
+- **Asynchronous logging** — don't block the response while writing interaction data to the event stream
 
-Rather than scoring outputs, behavioral tests assert that specific invariants hold. A model that correctly answers a question should also correctly answer semantically equivalent rephrases. A model that refuses a harmful request should refuse similar harmful requests.
+## A/B Testing Is Non-Negotiable
 
-Behavioral testing is especially valuable for safety and alignment work, where you want to verify that fine-tuning did not break existing capabilities.
+Offline metrics (NDCG, precision@k) are necessary but not sufficient. A model that looks great in a notebook can fail in production because it over-optimizes for engagement at the cost of diversity, or because it surfaces too many similar items.
 
-## Building a RAG Evaluation Pipeline
+I use a canary deployment pattern: new model versions get 10% of traffic for a week, with automated rollback if key metrics (CTR, booking rate, session length) degrade. This has caught several issues that offline evaluation missed, including a model that learned to recommend only high-margin items rather than items users actually wanted.
 
-Retrieval-augmented generation introduces an additional dimension: not only must the generated answer be correct, but the retrieved context must be relevant. This requires evaluating three things independently:
+## The Infrastructure Matters As Much As The Model
 
-1. **Retrieval recall**: Did the retriever surface the relevant documents?
-2. **Context faithfulness**: Does the generated answer only rely on facts present in the retrieved context?
-3. **Answer correctness**: Is the answer factually accurate given the question?
+A recommender that retrains weekly on stale data will underperform a simpler model that retrains daily. The infrastructure around the model — data pipelines, feature stores, model serving, monitoring — determines whether your system actually works in practice.
 
-I use RAGAS for automated scoring of faithfulness and answer relevancy, combined with human spot-checks on a stratified sample of queries.
+The stack I've converged on:
 
-## Practical Advice
+- **Training**: TensorFlow-Recommenders on GPU instances, triggered by data freshness checks
+- **Feature store**: Pre-computed user and item features in Redis for low-latency serving
+- **Serving**: KServe on Kubernetes with canary rollouts via Argo CD
+- **Monitoring**: Prediction drift detection and feature distribution monitoring via Prometheus
 
-Start simple. A spreadsheet with 50 hand-labeled examples and a manual evaluation rubric will teach you more about your failure modes than any automated pipeline. Build automation once you understand what you are measuring.
-
-Track regressions, not just absolute scores. A new model checkpoint that scores 0.85 on your eval suite is only useful if you know it previously scored 0.82. Version your eval datasets and store results in a structured format alongside your model checkpoints.
-
-Evaluate on the distribution you care about. The biggest mistake I see is evaluating on a benchmark that looks like the training data rather than the actual deployment queries. Collect real user queries early and build your eval set from them.
+Getting the ML right is half the battle. Getting it into production reliably is the other half.

@@ -13,7 +13,7 @@ const {
   ogImage = '/og-default.png',
 } = Astro.props;
 
-const pageTitle = `${title} | Satvik Daga`;
+const pageTitle = title ? `${title} | Satvik Daga` : 'Satvik Daga';
 const canonicalUrl = Astro.url.href;
 ---
 

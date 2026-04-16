@@ -1,0 +1,51 @@
+---
+title: "ML Infrastructure Pipeline"
+description: "End-to-end MLOps platform on AWS EKS with Terraform infrastructure-as-code and Argo CD GitOps, achieving 99.9% uptime and 50% faster deployments."
+tags: ["kubernetes", "aws", "terraform"]
+date: "2023-09-20"
+featured: true
+draft: false
+---
+
+# ML Infrastructure Pipeline
+
+Deploying a single ML model is straightforward. Operating a platform that supports multiple models in production — with automated retraining, canary rollouts, and monitoring — requires deliberate infrastructure design. This project is that platform.
+
+## Design Principles
+
+1. **Infrastructure as Code**: Every resource is defined in Terraform. No console clicks, no snowflake servers.
+2. **GitOps workflow**: Argo CD watches the Git repo and reconciles cluster state. If someone manually changes a deployment, Argo reverts it.
+3. **Model-agnostic**: The pipeline doesn't care what framework produced the model artifact. TensorFlow, PyTorch, scikit-learn — they all go through the same deployment path.
+
+## Infrastructure Stack
+
+**Compute**: AWS EKS (Kubernetes 1.27) with managed node groups. GPU node groups for training, spot instances for batch inference.
+
+**Networking**: VPC with private subnets for cluster nodes, public subnets for load balancers. All egress through a NAT gateway.
+
+**Storage**: S3 for model artifacts and training data. EBS CSI driver for persistent volumes during training jobs.
+
+**CI/CD**: GitHub Actions builds Docker images and pushes to ECR. Argo CD detects new manifests and rolls out to EKS.
+
+## Deployment Pipeline
+
+```
+Code push → GitHub Actions → Docker build → ECR push →
+Manifest update → Argo CD sync → Canary rollout →
+Metrics evaluation → Full rollout or rollback
+```
+
+The canary stage routes 10% of traffic to the new model version for 30 minutes. If error rates or latency exceed thresholds, Argo Rollouts automatically rolls back.
+
+## Monitoring
+
+Prometheus + Grafana for system metrics. Custom ML metrics (prediction drift, feature distribution skew) are logged to CloudWatch and trigger alerts when they exceed configured thresholds.
+
+## Results
+
+| Metric | Value |
+|--------|-------|
+| System uptime | 99.9% |
+| Deployment time | 50% reduction |
+| Models in production | 5+ concurrent |
+| Rollback time | < 2 minutes |
