@@ -16,7 +16,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     <ul class="space-y-8">
       {posts.map((post) => (
         <li>
-          <a href={`/blog/${post.slug}`} class="block">
+          <a href={`/blog/${post.id}`} class="block">
             <p class="text-fg">{post.data.title}</p>
             <p class="text-fg-muted text-[14px] mt-1">{post.data.date.toISOString().slice(0, 10)}</p>
             <p class="text-fg-muted mt-1">{post.data.description}</p>

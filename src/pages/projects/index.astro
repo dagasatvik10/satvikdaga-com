@@ -29,7 +29,7 @@ const allTags = [...new Set(projects.flatMap((p) => p.data.tags.map((t) => t.toL
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="project-grid">
       {projects.map((project) => (
         <a
-          href={`/projects/${project.slug}`}
+          href={`/projects/${project.id}`}
           class="project-card bg-bg-surface border border-stroke rounded-md p-6 block"
           data-tags={project.data.tags.map((t) => t.toLowerCase()).join(',')}
         >

@@ -12,7 +12,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   <ul class="space-y-4">
     {posts.map((post, i) => (
       <li class={`pl-4 ${i === 0 ? 'border-l-2 border-accent-blue' : 'border-l-2 border-stroke'}`}>
-        <a href={`/blog/${post.slug}`} class="block">
+        <a href={`/blog/${post.id}`} class="block">
           <p class="text-fg">{post.data.title}</p>
           <p class="text-fg-muted text-[14px]">{post.data.date.toISOString().slice(0, 10)}</p>
           <p class="text-fg-muted">{post.data.description}</p>
