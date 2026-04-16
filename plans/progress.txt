@@ -112,3 +112,21 @@
 
 - Full class strings ('text-accent-purple') must be returned — no template literals — so Tailwind JIT scans them from this file
 - Set lookup is O(1); preferred over array .includes() for per-tag calls inside list renders
+
+---
+
+## 2026-04-16T06:46:00Z - US-006
+
+**Implemented**
+
+- Created src/utils/readingTime.ts exporting getReadingTime(content: string): string
+- Wraps reading-time npm package, returns .text property (e.g. '3 min read')
+
+**Files Changed**
+
+- src/utils/readingTime.ts
+
+**Learnings**
+
+- reading-time default export returns an object; access .text for the human-readable string
+- Thin wrapper keeps external package import isolated to one file; consumers only import getReadingTime
