@@ -216,3 +216,24 @@
 
 - Astro .map() in JSX-like template returns array of VNodes natively — no wrapper needed
 - space-y-3 applies margin-top to all-but-first children using this project's 2px-base spacing (3 = 6px)
+
+---
+
+## 2026-04-16T06:52:00Z - US-011
+
+**Implemented**
+
+- Created src/components/RecentPosts.astro
+- Fetches non-draft blog posts via getCollection, sorted by date descending, sliced to 3
+- First post gets border-l-2 border-accent-blue; remaining get border-l-2 border-stroke via map index
+- 'all posts →' link to /blog styled text-accent-blue
+
+**Files Changed**
+
+- src/components/RecentPosts.astro
+
+**Learnings**
+
+- getCollection runs at build time inside Astro frontmatter; filter + sort + slice is pure static computation
+- map index (i === 0) cleanly drives per-item border color variation without extra state
+- date.toISOString().slice(0, 10) produces YYYY-MM-DD string from a Date object for display
