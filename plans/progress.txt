@@ -195,3 +195,24 @@
 
 - Hero is a pure static component — no props, no frontmatter imports needed
 - text-bg works as a Tailwind utility because `bg` is defined as a color token in tailwind.config.mjs
+
+---
+
+## 2026-04-16T06:51:00Z - US-010
+
+**Implemented**
+
+- Created src/components/Now.astro
+- Section label 'NOW' uppercase text-accent-yellow text-[11px] tracking-widest
+- Card wrapper bg-bg-surface border border-stroke rounded-md p-6
+- Imports now from src/data/now.ts, maps items with class={item.color} (no template literals)
+- updatedAt displayed as text-fg-muted text-[14px]
+
+**Files Changed**
+
+- src/components/Now.astro
+
+**Learnings**
+
+- Astro .map() in JSX-like template returns array of VNodes natively — no wrapper needed
+- space-y-3 applies margin-top to all-but-first children using this project's 2px-base spacing (3 = 6px)
