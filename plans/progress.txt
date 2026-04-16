@@ -154,3 +154,24 @@
 - CSS import in Astro frontmatter (import '../styles/global.css') gets bundled into page stylesheet; no runtime fetch
 - font preload requires crossorigin attribute even for same-origin fonts — browser fetches fonts via CORS mode; mismatched preload is ignored
 - Only preload the 400-weight font; other weights load on-demand when bold/semibold text renders
+
+---
+
+## 2026-04-16T06:49:00Z - US-008
+
+**Implemented**
+
+- Created src/components/Nav.astro with sticky nav, desktop links, mobile hamburger, dropdown, and vanilla JS toggle
+- bg-bg/80 opacity modifier works with hex color tokens — Tailwind v3 converts hex to RGB channels internally
+- Hamburger/X icons toggled via hidden class; same button position achieved by stacking both SVGs and hiding one at a time
+- Dropdown closes on X click, any .nav-link click, and ESC keydown
+
+**Files Changed**
+
+- src/components/Nav.astro
+
+**Learnings**
+
+- Tailwind opacity modifier (bg-bg/80) works with hex colors defined in extend.colors — Tailwind auto-converts to RGB channels
+- Astro <script> tag content runs client-side and is bundled at build time; no client: directive needed for vanilla JS
+- Use .nav-link class on mobile dropdown anchors to enable collective close-on-click listener without repeating event handlers
