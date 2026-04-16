@@ -324,3 +324,26 @@
 - Build warns about empty collections ("blog"/"projects" do not exist) — expected until US-017 adds sample MDX content; build still succeeds
 - Hero section does not need an id — it is the top of the page; nav anchor #projects links to the section wrapper
 - index.astro contains zero logic; all data fetching delegated to individual components (build-time execution)
+
+---
+
+## 2026-04-16T07:02:00Z - US-016
+
+**Implemented**
+
+- Created src/layouts/Post.astro accepting backLabel, backHref, title, description, date, tags, readingTime, devToUrl props
+- Wraps Base + Nav; article constrained to max-w-[720px] mx-auto px-6 py-12
+- Article header: back link (text-accent-blue), h1, date·readingTime·tag chips row, optional devToUrl note
+- Tag chips: bg-bg-subtle rounded-sm px-2 py-1 text-[12px] with getTagColor per tag
+- Footer contact strip: inline links (no Contact component heading) separated by border-t border-stroke-muted
+- <slot /> renders MDX body content
+
+**Files Changed**
+
+- src/layouts/Post.astro
+
+**Learnings**
+
+- Post.astro is a layout, not a component — it wraps MDX pages via <slot /> and is referenced by [slug].astro pages
+- Footer contact strip is intentionally inline (not reusing Contact.astro) because the component includes a section label/heading that doesn't belong in a post footer
+- date.toISOString().slice(0, 10) produces YYYY-MM-DD from the Zod-coerced Date object passed from frontmatter
