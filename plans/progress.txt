@@ -436,3 +436,27 @@
 - classList.toggle(className, bool) is cleaner than add/remove pairs for conditional class toggling
 - data-tags stores comma-separated string; split(',') on client for O(1) per-tag membership check
 - Projects listing page uses top-level await getCollection() — no getStaticPaths needed (that's only for [slug].astro)
+
+---
+
+## 2026-04-16T07:08:00Z - US-021
+
+**Implemented**
+
+- Created src/pages/projects/[slug].astro
+- getStaticPaths filters non-draft projects, passes full entry as prop
+- readingTime computed via getReadingTime(project.body) before render
+- Extended Post.astro with optional githubUrl and demoUrl props
+- Link buttons rendered in article header: githubUrl → text-accent-blue, demoUrl → text-accent-green
+- rag-eval.mdx renders at /projects/rag-eval
+
+**Files Changed**
+
+- src/pages/projects/[slug].astro
+- src/layouts/Post.astro
+
+**Learnings**
+
+- Post.astro is the single source of truth for article header rendering — extend it with optional props rather than duplicating header markup in page files
+- githubUrl/demoUrl link buttons use border border-stroke with hover border color variant for a CTA affordance consistent with Hero.astro secondary CTAs
+- project.body is available before render() — reading time can be computed without awaiting render
