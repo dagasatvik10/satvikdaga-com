@@ -93,3 +93,22 @@
 
 - Color values in data files must be full Tailwind class strings (e.g. 'text-accent-blue'), never template literals — Tailwind JIT purges dynamic expressions in production
 - Data directory (src/data/) does not need any index file; individual named exports work fine
+
+---
+
+## 2026-04-16T06:45:00Z - US-005
+
+**Implemented**
+
+- Created src/utils/tagColor.ts exporting getTagColor(tag: string): string
+- ML/AI tags set: python, pytorch, tensorflow, llm, ml, ai, rag, nlp, transformers, huggingface → 'text-accent-purple'
+- All other tags → 'text-accent-blue'
+
+**Files Changed**
+
+- src/utils/tagColor.ts
+
+**Learnings**
+
+- Full class strings ('text-accent-purple') must be returned — no template literals — so Tailwind JIT scans them from this file
+- Set lookup is O(1); preferred over array .includes() for per-tag calls inside list renders
