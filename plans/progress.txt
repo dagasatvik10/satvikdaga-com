@@ -130,3 +130,27 @@
 
 - reading-time default export returns an object; access .text for the human-readable string
 - Thin wrapper keeps external package import isolated to one file; consumers only import getReadingTime
+
+---
+
+## 2026-04-16T06:47:00Z - US-007
+
+**Implemented**
+
+- Created src/layouts/Base.astro with title, description, ogImage props
+- Imports global.css via frontmatter import (Astro idiomatic pattern)
+- Renders <title> as '{title} | Satvik Daga'
+- Renders og:title, og:description, og:image, og:url meta tags
+- favicon.svg link and font preload for Regular 400-weight only
+- <slot /> for page content injection
+
+**Files Changed**
+
+- src/layouts/Base.astro
+
+**Learnings**
+
+- Astro.url.href gives the full canonical URL at build time — use for og:url
+- CSS import in Astro frontmatter (import '../styles/global.css') gets bundled into page stylesheet; no runtime fetch
+- font preload requires crossorigin attribute even for same-origin fonts — browser fetches fonts via CORS mode; mismatched preload is ignored
+- Only preload the 400-weight font; other weights load on-demand when bold/semibold text renders
