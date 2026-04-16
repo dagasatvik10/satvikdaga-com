@@ -237,3 +237,25 @@
 - getCollection runs at build time inside Astro frontmatter; filter + sort + slice is pure static computation
 - map index (i === 0) cleanly drives per-item border color variation without extra state
 - date.toISOString().slice(0, 10) produces YYYY-MM-DD string from a Date object for display
+
+---
+
+## 2026-04-16T06:54:00Z - US-012
+
+**Implemented**
+
+- Created src/components/ProjectGrid.astro
+- Fetches non-draft projects; uses featured === true subset if any exist, else falls back to 4 most recent by date
+- 2-column grid: grid grid-cols-1 sm:grid-cols-2 gap-4
+- Tag chips use getTagColor from src/utils/tagColor.ts; full class strings passed to template literal (safe for JIT)
+- Empty state renders single placeholder card with 'projects coming soon' in text-fg-muted
+- 'all projects →' link to /projects as text-accent-blue
+
+**Files Changed**
+
+- src/components/ProjectGrid.astro
+
+**Learnings**
+
+- Template literals using getTagColor return values are JIT-safe because tagColor.ts returns full static strings scanned by Tailwind
+- Two-tier fallback (featured → date-sorted) implemented with a conditional in frontmatter — no reactive state needed
