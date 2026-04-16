@@ -460,3 +460,24 @@
 - Post.astro is the single source of truth for article header rendering — extend it with optional props rather than duplicating header markup in page files
 - githubUrl/demoUrl link buttons use border border-stroke with hover border color variant for a CTA affordance consistent with Hero.astro secondary CTAs
 - project.body is available before render() — reading time can be computed without awaiting render
+
+---
+
+## 2026-04-16T07:10:00Z - US-022
+
+**Implemented**
+
+- Created src/pages/404.astro
+- h1 '404 — not found' styled text-fg text-2xl font-bold
+- Paragraph 'This page doesn't exist.' styled text-fg-muted
+- '← go home' link to / styled text-accent-blue hover:underline
+- Wrapped in Base layout with Nav; content in max-w-[720px] mx-auto px-6 py-12
+
+**Files Changed**
+
+- src/pages/404.astro
+
+**Learnings**
+
+- Astro treats src/pages/404.astro as a special file — outputs /404.html automatically, no config needed
+- 404.astro is a singleton (no getStaticPaths); simplest possible page pattern in the project
