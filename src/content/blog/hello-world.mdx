@@ -1,0 +1,55 @@
+---
+title: "Building Recommendation Systems That Scale"
+date: "2026-04-16"
+description: "Lessons learned deploying dual-pathway recommender systems — collaborative filtering, graph embeddings, and the infrastructure needed to serve 2M+ users."
+tags: ["ml", "recommendations"]
+draft: false
+---
+
+# Building Recommendation Systems That Scale
+
+Most recommendation system tutorials stop at "train a model, get predictions." Production recommenders are a different beast — they need to handle cold starts, serve predictions under 100ms, retrain on fresh data, and degrade gracefully when things go wrong. Here's what I've learned building these systems at scale.
+
+## The Cold Start Problem Is Real
+
+Collaborative filtering works beautifully when you have rich interaction data. But new users have no history. New items have no interactions. If your system can't handle either case, you've built a recommender that works for your most engaged users and fails for everyone else.
+
+The pragmatic solution is a hybrid approach: combine collaborative filtering with content-based features. When interaction data is sparse, fall back to item metadata (cuisine type, price range, location). The content pathway won't produce serendipitous recommendations, but it will produce reasonable ones.
+
+## Graph Embeddings Capture What Matrix Factorization Misses
+
+Standard collaborative filtering treats interactions as a user-item matrix. But interactions form a graph — users who visit Restaurant A also visit Restaurant B. Items co-booked share structural relationships that matrix factorization can't capture.
+
+I use Cleora for graph embeddings because it's fast, handles bipartite graphs natively, and produces embeddings that encode neighborhood structure. The key insight is that graph embeddings excel at serendipity — surfacing items that are structurally similar even if their metadata looks different.
+
+In production, blending graph embeddings with collaborative filtering embeddings improved cold-start recommendation quality by 2x.
+
+## Serving Latency Is a Product Decision
+
+Your model might produce perfect recommendations, but if it takes 500ms to serve them, users will scroll past. At 2M+ monthly active users with traffic spikes during meal times, we targeted P99 latency under 100ms.
+
+This meant:
+
+- **Pre-computing embeddings** during offline training rather than computing them at inference time
+- **Using KServe on Kubernetes** with autoscaling from 2 to 20 replicas
+- **Caching popular recommendations** — the top 10% of items account for 60% of requests
+- **Asynchronous logging** — don't block the response while writing interaction data to the event stream
+
+## A/B Testing Is Non-Negotiable
+
+Offline metrics (NDCG, precision@k) are necessary but not sufficient. A model that looks great in a notebook can fail in production because it over-optimizes for engagement at the cost of diversity, or because it surfaces too many similar items.
+
+I use a canary deployment pattern: new model versions get 10% of traffic for a week, with automated rollback if key metrics (CTR, booking rate, session length) degrade. This has caught several issues that offline evaluation missed, including a model that learned to recommend only high-margin items rather than items users actually wanted.
+
+## The Infrastructure Matters As Much As The Model
+
+A recommender that retrains weekly on stale data will underperform a simpler model that retrains daily. The infrastructure around the model — data pipelines, feature stores, model serving, monitoring — determines whether your system actually works in practice.
+
+The stack I've converged on:
+
+- **Training**: TensorFlow-Recommenders on GPU instances, triggered by data freshness checks
+- **Feature store**: Pre-computed user and item features in Redis for low-latency serving
+- **Serving**: KServe on Kubernetes with canary rollouts via Argo CD
+- **Monitoring**: Prediction drift detection and feature distribution monitoring via Prometheus
+
+Getting the ML right is half the battle. Getting it into production reliably is the other half.

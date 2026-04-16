@@ -1,0 +1,80 @@
+---
+---
+
+<nav class="sticky top-0 z-50 backdrop-blur-sm bg-bg/80 border-b border-stroke-muted">
+  <div class="flex items-center justify-between px-8 py-4">
+    <!-- Logo -->
+    <a href="/" class="text-accent-blue font-bold text-[18px]">sd.</a>
+
+    <!-- Desktop nav links -->
+    <ul class="hidden sm:flex items-center gap-8 list-none m-0 p-0">
+      <li><a href="/#now" class="text-fg-muted hover:text-fg text-[14px]">Now</a></li>
+      <li><a href="/blog" class="text-fg-muted hover:text-fg text-[14px]">Writing</a></li>
+      <li><a href="/projects" class="text-fg-muted hover:text-fg text-[14px]">Projects</a></li>
+      <li><a href="/#experience" class="text-fg-muted hover:text-fg text-[14px]">Experience</a></li>
+      <li><a href="/#contact" class="text-fg-muted hover:text-fg text-[14px]">Contact</a></li>
+    </ul>
+
+    <!-- Hamburger button (mobile only) -->
+    <button
+      id="nav-toggle"
+      class="sm:hidden flex items-center justify-center text-fg-muted hover:text-fg"
+      aria-label="Toggle navigation"
+    >
+      <!-- Hamburger icon -->
+      <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+      <!-- X icon -->
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="nav-dropdown" class="hidden sm:hidden bg-bg-surface border-t border-stroke-muted">
+    <ul class="list-none m-0 p-0">
+      <li><a href="/#now" class="nav-link block py-3 px-6 text-fg-muted hover:text-fg text-[14px]">Now</a></li>
+      <li><a href="/blog" class="nav-link block py-3 px-6 text-fg-muted hover:text-fg text-[14px]">Writing</a></li>
+      <li><a href="/projects" class="nav-link block py-3 px-6 text-fg-muted hover:text-fg text-[14px]">Projects</a></li>
+      <li><a href="/#experience" class="nav-link block py-3 px-6 text-fg-muted hover:text-fg text-[14px]">Experience</a></li>
+      <li><a href="/#contact" class="nav-link block py-3 px-6 text-fg-muted hover:text-fg text-[14px]">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const dropdown = document.getElementById('nav-dropdown');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+
+  function openMenu() {
+    dropdown?.classList.remove('hidden');
+    iconOpen?.classList.add('hidden');
+    iconClose?.classList.remove('hidden');
+  }
+
+  function closeMenu() {
+    dropdown?.classList.add('hidden');
+    iconOpen?.classList.remove('hidden');
+    iconClose?.classList.add('hidden');
+  }
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = !dropdown?.classList.contains('hidden');
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  document.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+</script>

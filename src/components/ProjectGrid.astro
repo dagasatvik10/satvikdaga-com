@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import { getTagColor } from '../utils/tagColor';
+
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+
+const featuredProjects = allProjects.filter((p) => p.data.featured === true);
+
+const projects = featuredProjects.length > 0
+  ? featuredProjects
+  : allProjects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 4);
+---
+
+<section class="px-8 py-10">
+  <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-4">PROJECTS</p>
+
+  {projects.length === 0 ? (
+    <div class="bg-bg-surface border border-stroke rounded-md p-6">
+      <p class="text-fg-muted">projects coming soon</p>
+    </div>
+  ) : (
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {projects.map((project) => (
+        <div class="bg-bg-surface border border-stroke rounded-md p-6">
+          <p class="text-fg">{project.data.title}</p>
+          <p class="text-fg-muted mt-2">{project.data.description}</p>
+          <div class="flex flex-wrap gap-2 mt-4">
+            {project.data.tags.map((tag) => (
+              <span class={`bg-bg-subtle rounded-sm px-2 py-1 text-[12px] ${getTagColor(tag)}`}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+
+  <a href="/projects" class="block mt-6 text-accent-blue">all projects →</a>
+</section>

@@ -1,0 +1,24 @@
+---
+import { experience } from '../data/experience';
+---
+
+<section>
+  <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-6">EXPERIENCE</p>
+  <div class="space-y-6">
+    {experience.map((entry) => (
+      <div class="flex items-start gap-4">
+        <div class="mt-2 flex-shrink-0">
+          <div class={`w-2 h-2 rounded-full ${entry.current ? 'bg-accent-blue' : 'bg-stroke'}`} />
+        </div>
+        <div>
+          {entry.url
+            ? <a href={entry.url} target="_blank" rel="noopener" class="text-accent-blue hover:underline">{entry.company}</a>
+            : <span class="text-fg">{entry.company}</span>
+          }
+          <p class="text-fg-muted">{entry.title}</p>
+          <p class="text-fg-muted text-[14px]">{entry.period}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

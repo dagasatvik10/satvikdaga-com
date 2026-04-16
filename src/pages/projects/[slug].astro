@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import Post from '../../layouts/Post.astro';
+import { getReadingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+const { title, description, date, tags, githubUrl, demoUrl } = project.data;
+const readingTime = getReadingTime(project.body);
+---
+
+<Post
+  backLabel="← all projects"
+  backHref="/projects"
+  title={title}
+  description={description}
+  date={date}
+  tags={tags}
+  readingTime={readingTime}
+  githubUrl={githubUrl}
+  demoUrl={demoUrl}
+>
+  <Content />
+</Post>

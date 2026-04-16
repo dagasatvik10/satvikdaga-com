@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { getTagColor } from '../../utils/tagColor';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allTags = [...new Set(projects.flatMap((p) => p.data.tags.map((t) => t.toLowerCase())))].sort();
+---
+
+<Base title="Projects">
+  <Nav />
+  <main class="max-w-[960px] mx-auto px-6 py-12">
+    <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-8">PROJECTS</p>
+
+    <div class="flex flex-wrap gap-2 mb-8" id="tag-filters">
+      {allTags.map((tag) => (
+        <button
+          class="tag-btn border rounded-sm px-2 py-1 text-[12px] bg-bg-subtle border-stroke"
+          data-tag={tag}
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="project-grid">
+      {projects.map((project) => (
+        <a
+          href={`/projects/${project.id}`}
+          class="project-card bg-bg-surface border border-stroke rounded-md p-6 block"
+          data-tags={project.data.tags.map((t) => t.toLowerCase()).join(',')}
+        >
+          <p class="text-fg">{project.data.title}</p>
+          <p class="text-fg-muted mt-2">{project.data.description}</p>
+          <div class="flex flex-wrap gap-2 mt-4">
+            {project.data.tags.map((tag) => (
+              <span class={`bg-bg-subtle rounded-sm px-2 py-1 text-[12px] ${getTagColor(tag)}`}>{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.project-card');
+  let activeTag: string | null = null;
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag!;
+
+      if (activeTag === tag) {
+        // deselect — show all
+        activeTag = null;
+        cards.forEach((card) => card.classList.remove('hidden'));
+        buttons.forEach((b) => {
+          b.classList.remove('bg-bg-surface', 'border-accent-blue');
+          b.classList.add('bg-bg-subtle', 'border-stroke');
+        });
+      } else {
+        activeTag = tag;
+        cards.forEach((card) => {
+          const tags = card.dataset.tags?.split(',') ?? [];
+          card.classList.toggle('hidden', !tags.includes(tag));
+        });
+        buttons.forEach((b) => {
+          const isActive = b.dataset.tag === tag;
+          b.classList.toggle('bg-bg-surface', isActive);
+          b.classList.toggle('border-accent-blue', isActive);
+          b.classList.toggle('bg-bg-subtle', !isActive);
+          b.classList.toggle('border-stroke', !isActive);
+        });
+      }
+    });
+  });
+</script>

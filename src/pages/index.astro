@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Now from '../components/Now.astro';
+import RecentPosts from '../components/RecentPosts.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import Experience from '../components/Experience.astro';
+import Contact from '../components/Contact.astro';
+---
+
+<Base title="">
+  <Nav />
+  <Hero />
+  <hr class="border-t border-stroke-muted mx-8" />
+  <section id="now">
+    <Now />
+  </section>
+  <hr class="border-t border-stroke-muted mx-8" />
+  <section id="writing">
+    <RecentPosts />
+  </section>
+  <hr class="border-t border-stroke-muted mx-8" />
+  <section id="projects">
+    <ProjectGrid />
+  </section>
+  <hr class="border-t border-stroke-muted mx-8" />
+  <section id="experience">
+    <Experience />
+  </section>
+  <hr class="border-t border-stroke-muted mx-8" />
+  <section id="contact">
+    <Contact />
+  </section>
+</Base>

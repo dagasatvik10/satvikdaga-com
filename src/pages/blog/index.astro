@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { getTagColor } from '../../utils/tagColor';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Writing">
+  <Nav />
+  <main class="max-w-[720px] mx-auto px-6 py-12">
+    <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-8">WRITING</p>
+
+    <ul class="space-y-8">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}`} class="block">
+            <p class="text-fg">{post.data.title}</p>
+            <p class="text-fg-muted text-[14px] mt-1">{post.data.date.toISOString().slice(0, 10)}</p>
+            <p class="text-fg-muted mt-1">{post.data.description}</p>
+            <div class="flex flex-wrap gap-2 mt-2">
+              {post.data.tags.map((tag) => (
+                <span class={`bg-bg-subtle rounded-sm px-2 py-1 text-[12px] ${getTagColor(tag)}`}>{tag}</span>
+              ))}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</Base>

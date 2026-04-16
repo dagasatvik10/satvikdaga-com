@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<section class="px-8 py-10">
+  <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-4">RECENT WRITING</p>
+
+  <ul class="space-y-4">
+    {posts.map((post, i) => (
+      <li class={`pl-4 ${i === 0 ? 'border-l-2 border-accent-blue' : 'border-l-2 border-stroke'}`}>
+        <a href={`/blog/${post.id}`} class="block">
+          <p class="text-fg">{post.data.title}</p>
+          <p class="text-fg-muted text-[14px]">{post.data.date.toISOString().slice(0, 10)}</p>
+          <p class="text-fg-muted">{post.data.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <a href="/blog" class="block mt-6 text-accent-blue">all posts →</a>
+</section>

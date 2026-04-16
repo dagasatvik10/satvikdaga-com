@@ -1,0 +1,90 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import { getTagColor } from '../utils/tagColor';
+
+interface Props {
+  backLabel: string;
+  backHref: string;
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  readingTime: string;
+  devToUrl?: string;
+  githubUrl?: string;
+  demoUrl?: string;
+}
+
+const { backLabel, backHref, title, description, date, tags, readingTime, devToUrl, githubUrl, demoUrl } = Astro.props;
+
+const dateStr = date.toISOString().slice(0, 10);
+---
+
+<Base title={title} description={description}>
+  <Nav />
+
+  <main class="max-w-[720px] mx-auto px-6 py-12">
+    <article>
+      <!-- Article header -->
+      <header class="mb-10">
+        <a href={backHref} class="text-accent-blue hover:underline text-[14px]">{backLabel}</a>
+
+        <h1 class="text-fg text-3xl font-bold mt-6 mb-4">{title}</h1>
+
+        <div class="flex flex-wrap items-center gap-3 text-fg-muted text-[14px] mb-4">
+          <span>{dateStr}</span>
+          <span>·</span>
+          <span>{readingTime}</span>
+          <span>·</span>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span class={`bg-bg-subtle rounded-sm px-2 py-1 text-[12px] ${getTagColor(tag)}`}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {(githubUrl || demoUrl) && (
+          <div class="flex flex-wrap gap-3 mb-4">
+            {githubUrl && (
+              <a href={githubUrl} target="_blank" rel="noopener" class="text-accent-blue border border-stroke px-4 py-2 rounded-md text-[14px] hover:border-accent-blue">
+                GitHub ↗
+              </a>
+            )}
+            {demoUrl && (
+              <a href={demoUrl} target="_blank" rel="noopener" class="text-accent-green border border-stroke px-4 py-2 rounded-md text-[14px] hover:border-accent-green">
+                Live demo ↗
+              </a>
+            )}
+          </div>
+        )}
+
+        {devToUrl && (
+          <p class="text-fg-muted text-[14px]">
+            Originally published on{' '}
+            <a href={devToUrl} target="_blank" rel="noopener" class="text-accent-blue hover:underline">
+              dev.to ↗
+            </a>
+          </p>
+        )}
+      </header>
+
+      <!-- MDX body -->
+      <div class="prose-content text-fg">
+        <slot />
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer contact strip -->
+  <footer class="border-t border-stroke-muted">
+    <div class="max-w-[720px] mx-auto px-6 py-8 flex flex-wrap gap-6 text-[14px]">
+      <a href="mailto:dagasatvik@gmail.com" class="text-accent-blue hover:underline">dagasatvik@gmail.com</a>
+      <a href="https://github.com/dagasatvik10" target="_blank" rel="noopener" class="text-accent-blue hover:underline">GitHub ↗</a>
+      <a href="https://linkedin.com/in/satvik-daga" target="_blank" rel="noopener" class="text-accent-blue hover:underline">LinkedIn ↗</a>
+      <a href="https://dev.to/dagasatvik10" target="_blank" rel="noopener" class="text-accent-blue hover:underline">dev.to ↗</a>
+    </div>
+  </footer>
+</Base>

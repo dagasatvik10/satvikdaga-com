@@ -15,8 +15,8 @@ npm run preview   # preview dist/ locally
 
 ```
 src/
-  content/        # MDX blog posts & projects (Astro Content Collections)
-    config.ts     # MANDATORY — defineCollection + Zod schemas
+  content/        # MDX blog posts & projects (Content Layer API)
+  content.config.ts  # Collection definitions — defineCollection + glob loaders + Zod schemas
   data/           # Static TS objects: now.ts, experience.ts
   components/     # .astro components, no React
   layouts/        # Base.astro (head/OG), Post.astro (blog/project)
@@ -52,6 +52,16 @@ docs/superpowers/specs/2026-04-16-portfolio-design.md  # Design spec
 - `draft: true` frontmatter produces **no route** (404 on direct URL)
 - All collection queries must filter: `getCollection('blog', ({ data }) => !data.draft)`
 
-### Content Collections
-- `src/content/config.ts` is **mandatory** in Astro v3+
+### Content Collections (Content Layer API)
+- Config lives at `src/content.config.ts` (NOT inside `src/content/`)
+- Each collection requires a `loader: glob({ pattern, base })` — no implicit file discovery
+- Import `z` from `astro/zod`, NOT from `astro:content`
+- Import `glob` from `astro/loaders`
+- Entries use `id` (the slug), NOT `slug` — replace all `post.slug` with `post.id`
+- Render with standalone `render(entry)` from `astro:content`, NOT `entry.render()`
 - Zod schemas validate frontmatter at build time — TypeScript errors appear immediately on bad frontmatter
+
+### Tailwind via PostCSS
+- Uses `postcss.config.cjs` with `tailwindcss` plugin (NOT `@astrojs/tailwind`)
+- `@tailwind base/components/utilities` directives in `src/styles/global.css`
+- Config in `tailwind.config.mjs` at project root
