@@ -1,0 +1,389 @@
+{
+  "project": "satvikdaga.com",
+  "branchName": "ralph/portfolio-site",
+  "description": "Personal portfolio site for Satvik Daga — full static build with Astro + Tailwind CSS, GitHub-dark palette, JetBrains Mono typography, 7 homepage sections, blog and projects collections, and responsive mobile layout.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Project Scaffolding",
+      "description": "As an AI agent, I need to initialize the Astro + Tailwind project so that all subsequent components have a working build environment.",
+      "acceptanceCriteria": [
+        "package.json created with astro, @astrojs/tailwind, tailwindcss, reading-time, @astrojs/mdx dependencies",
+        "astro.config.mjs created with @astrojs/tailwind and @astrojs/mdx integrations, site: 'https://satvikdaga.com', output: 'static'",
+        "tailwind.config.mjs created with full GitHub-dark palette tokens (bg, bg-surface, bg-subtle, stroke, stroke-muted, fg, fg-muted, accent-blue/green/purple/yellow/red), fontFamily.mono: ['JetBrains Mono', 'monospace'], and 2px-base theme.spacing replacing defaults (not extending)",
+        "Spacing scale under theme.spacing (not theme.extend.spacing): 0=0px, 1=2px, 2=4px, 3=6px, 4=8px, 5=10px, 6=12px, 8=16px, 10=20px, 12=24px, 14=28px, 16=32px, 20=40px",
+        "Token names use stroke (not border) and fg (not text) to avoid Tailwind utility collisions",
+        "npm install completes without errors",
+        "npm run dev starts without errors",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Font Loading & Global CSS",
+      "description": "As a site visitor, I want JetBrains Mono to load quickly and consistently so that the developer identity is immediately apparent.",
+      "acceptanceCriteria": [
+        "public/fonts/JetBrainsMono-Regular.woff2, JetBrainsMono-SemiBold.woff2, JetBrainsMono-Bold.woff2 downloaded from https://github.com/JetBrains/JetBrainsMono/releases (latest stable) and placed in public/fonts/",
+        "src/styles/global.css declares @font-face for weights 400 (Regular), 600 (SemiBold), 700 (Bold) pointing to /fonts/JetBrainsMono-*.woff2",
+        "global.css sets body { font-family: 'JetBrains Mono', monospace; background: #0d1117; color: #e6edf3; margin: 0; }",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Content Collections Schema",
+      "description": "As an AI agent, I need type-safe content schemas so that MDX frontmatter is validated at build time and TypeScript errors surface early.",
+      "acceptanceCriteria": [
+        "src/content/config.ts exists and exports two collections via defineCollection with zod schemas",
+        "blog collection schema: title (string), date (Date), description (string), tags (string[]), draft (boolean, default false), devToUrl (string, optional)",
+        "projects collection schema: title (string), description (string), tags (string[]), date (Date), githubUrl (string, optional), demoUrl (string, optional), featured (boolean, optional), draft (boolean, default false)",
+        "npm run build produces no TypeScript errors related to content collections",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Data Files — Now & Experience",
+      "description": "As a developer, I need structured TypeScript data files for the Now and Experience sections so that they can be updated without touching component code.",
+      "acceptanceCriteria": [
+        "src/data/now.ts exports const now = { items: [...], updatedAt: '2026-04-16' } with at least 3 items each having label, text, and color as a full Tailwind class string (e.g. 'text-accent-blue') — no dynamic template literals",
+        "now.ts items: { label: 'Building', text: 'RAG evaluation pipelines', color: 'text-accent-blue' }, { label: 'Exploring', text: 'mechanistic interpretability', color: 'text-accent-green' }, { label: 'Writing', text: 'LLM evaluation methodology', color: 'text-accent-purple' }",
+        "src/data/experience.ts exports const experience array with at least 2 entries each having title, company, url (optional), period, current (boolean)",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Tag Color Utility",
+      "description": "As a developer, I need a shared tag color lookup so that all components render tag chips with consistent domain-based coloring.",
+      "acceptanceCriteria": [
+        "src/utils/tagColor.ts exports a function getTagColor(tag: string): string",
+        "ML/AI tags (python, pytorch, tensorflow, llm, ml, ai, rag, nlp, transformers, huggingface) return 'text-accent-purple'",
+        "All other tags return 'text-accent-blue'",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Reading Time Utility",
+      "description": "As a developer, I need a reading time helper so that blog posts and project writeups can display an estimated read time computed at build time.",
+      "acceptanceCriteria": [
+        "src/utils/readingTime.ts exports a function getReadingTime(content: string): string using the reading-time npm package",
+        "Returns a human-readable string like '3 min read'",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Base.astro Layout",
+      "description": "As a site visitor, I want consistent <head> metadata across all pages so that sharing links and search indexing work correctly.",
+      "acceptanceCriteria": [
+        "src/layouts/Base.astro accepts title (string), description (string, default 'ML Engineer building systems that learn from data at scale.'), ogImage (string, default '/og-default.png') props",
+        "<title> rendered as '{title} | Satvik Daga'",
+        "<meta property='og:title'>, og:description, og:image, og:url tags rendered",
+        "<link rel='icon' href='/favicon.svg'> present",
+        "<link rel='preload' as='font' crossorigin href='/fonts/JetBrainsMono-Regular.woff2'> present for 400-weight only",
+        "global.css imported via <style> or @import",
+        "<slot /> renders page content",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Nav.astro",
+      "description": "As a site visitor, I want a sticky navigation bar so that I can jump to any section from anywhere on the page.",
+      "acceptanceCriteria": [
+        "Nav is sticky (sticky top-0), backdrop-blur-sm, bg-bg/80, border-b border-stroke-muted",
+        "'sd.' logo left-aligned as text-accent-blue font-bold, links (Now, Writing, Projects, Experience, Contact) right-aligned on desktop (sm:flex)",
+        "On mobile (<640px): nav links hidden (hidden sm:flex), 3-line hamburger SVG 24x24 shown right-aligned (sm:hidden)",
+        "Hamburger open state: full-width dropdown below nav, links stacked vertically, bg-bg-surface, each link py-3 px-6",
+        "Dropdown closes on: X icon click (same button position), any nav link click, ESC key press",
+        "Implemented via vanilla JS <script> in Nav.astro toggling a .hidden class on the dropdown — no Astro client directives",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Hero.astro",
+      "description": "As a recruiter visiting the site, I want a clear, compelling hero section so that I immediately understand who Satvik is and what he does.",
+      "acceptanceCriteria": [
+        "Renders full name 'Satvik Daga' as h1 text-fg",
+        "Renders title 'ML Engineer · Data Scientist' as text-fg-muted",
+        "Renders tagline 'I build systems that learn from data at scale.' as text-fg",
+        "Primary CTA: '→ projects' links to #projects, styled bg-accent-blue text-bg px-6 py-3 rounded-md",
+        "Secondary CTAs: 'GitHub ↗' linking to https://github.com/dagasatvik10 and 'LinkedIn ↗' linking to https://linkedin.com/in/satvik-daga, both open in new tab with rel='noopener', styled border border-stroke text-fg",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Now.astro",
+      "description": "As a visitor, I want to see what Satvik is currently working on so that I understand his current focus areas.",
+      "acceptanceCriteria": [
+        "Section label 'NOW' rendered uppercase, text-accent-yellow, text-[11px], tracking-widest",
+        "Card wrapper: bg-bg-surface border border-stroke rounded-md p-6",
+        "Imports now from src/data/now.ts and maps over items",
+        "Each item renders label (text-fg-muted) and text with item.color applied as a class directly (class={item.color}) — no dynamic template literals",
+        "updatedAt date displayed as text-fg-muted text-[14px] below items",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "RecentPosts.astro",
+      "description": "As a visitor, I want to see Satvik's latest writing so that I can gauge his communication style and areas of expertise.",
+      "acceptanceCriteria": [
+        "Section label 'RECENT WRITING' rendered uppercase, text-accent-yellow, text-[11px], tracking-widest",
+        "Fetches up to 3 most recent non-draft blog posts via getCollection('blog', ({ data }) => !data.draft) sorted by date descending",
+        "Each post rendered with 2px left border: index 0 = border-l-2 border-accent-blue, others = border-l-2 border-stroke",
+        "Each post shows title (text-fg), date (text-fg-muted text-[14px]), and description (text-fg-muted)",
+        "'all posts →' link to /blog at the bottom as text-accent-blue",
+        "If fewer than 3 posts exist, renders however many are available with no placeholder",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "ProjectGrid.astro",
+      "description": "As a recruiter, I want to see Satvik's featured projects in a visual grid so that I can quickly assess his technical breadth.",
+      "acceptanceCriteria": [
+        "Section label 'PROJECTS' rendered uppercase, text-accent-yellow, text-[11px], tracking-widest",
+        "Fetches non-draft projects where featured === true; falls back to 4 most recent non-draft projects sorted by date if no featured projects exist",
+        "2-column card grid: grid grid-cols-1 sm:grid-cols-2 gap-4",
+        "Each card: bg-bg-surface border border-stroke rounded-md p-6, shows title (text-fg), description (text-fg-muted), and tag chips",
+        "Tag chips: bg-bg-subtle rounded-sm px-2 py-1 text-[12px], color from getTagColor(tag) imported from src/utils/tagColor.ts",
+        "If projects collection is empty, renders a single placeholder card with text 'projects coming soon' in text-fg-muted",
+        "'all projects →' link to /projects at the bottom as text-accent-blue",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Experience.astro",
+      "description": "As a recruiter, I want to see Satvik's work history in a timeline format so that I can assess career progression at a glance.",
+      "acceptanceCriteria": [
+        "Section label 'EXPERIENCE' rendered uppercase, text-accent-yellow, text-[11px], tracking-widest",
+        "Imports experience from src/data/experience.ts and maps over entries",
+        "Each entry: timeline dot + company name + title + period",
+        "Current role dot: w-2 h-2 rounded-full bg-accent-blue; past role dot: w-2 h-2 rounded-full bg-stroke",
+        "Company name rendered as <a href={url} target='_blank' rel='noopener' class='text-accent-blue hover:underline'> when url present; plain text-fg otherwise",
+        "title and period rendered as text-fg-muted",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Contact.astro",
+      "description": "As a visitor who wants to reach out, I want a simple contact section so that I can find the right channel to connect with Satvik.",
+      "acceptanceCriteria": [
+        "Renders heading 'Let's talk.' or similar in text-fg",
+        "Links: email (mailto:dagasatvik@gmail.com), GitHub (https://github.com/dagasatvik10), LinkedIn (https://linkedin.com/in/satvik-daga), dev.to (https://dev.to/dagasatvik10)",
+        "Each link styled text-accent-blue hover:underline",
+        "External links have target='_blank' rel='noopener'",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "index.astro — Homepage Assembly",
+      "description": "As a visitor, I want a single-page scrolling experience so that I can explore all sections without navigating away.",
+      "acceptanceCriteria": [
+        "src/pages/index.astro imports and renders in order: Nav, Hero, Now, RecentPosts, ProjectGrid, Experience, Contact",
+        "Section wrappers have matching id attributes: id='now', id='writing', id='projects', id='experience', id='contact'",
+        "Dividers between sections: <hr class='border-t border-stroke-muted mx-8'>",
+        "Wrapped in <Base title='Satvik Daga'>",
+        "All 7 sections visible at npm run dev",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Post.astro Layout",
+      "description": "As a reader, I want a clean, readable layout for blog posts and project writeups so that the content is the focus.",
+      "acceptanceCriteria": [
+        "src/layouts/Post.astro accepts backLabel (string) and backHref (string) props, plus title, description, date, tags, readingTime, devToUrl (optional) via Astro.props",
+        "Renders: Nav, article with max-w-[720px] mx-auto px-6, footer contact links strip — all inside Base",
+        "Article header: back link using backLabel/backHref styled text-accent-blue, h1 title, date · readingTime · tag chips",
+        "If devToUrl is present: renders 'Originally published on dev.to ↗' as a link to devToUrl below the header in text-fg-muted text-[14px]",
+        "Tag chips use getTagColor from src/utils/tagColor.ts",
+        "<slot /> renders MDX body content",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Sample MDX Content",
+      "description": "As a developer running verification, I need sample MDX content so that all route pages can be tested and all 6 spec verification steps can be executed.",
+      "acceptanceCriteria": [
+        "src/content/blog/hello-world.mdx created with title, date, description, tags (['llm', 'ai']), draft: false, and at least 200 words of body content",
+        "src/content/blog/draft-post.mdx created with draft: true",
+        "src/content/projects/rag-eval.mdx created with title, description, tags (['python', 'rag', 'llm']), date, featured: true, draft: false, and at least 200 words of body content",
+        "npm run build completes with no TypeScript or Astro errors",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "blog/index.astro",
+      "description": "As a reader, I want to browse all of Satvik's blog posts in one place so that I can find articles relevant to my interests.",
+      "acceptanceCriteria": [
+        "src/pages/blog/index.astro fetches all non-draft blog posts sorted by date descending",
+        "Renders each post as a list item with title (text-fg), date (text-fg-muted text-[14px]), description (text-fg-muted), and tag chips using getTagColor",
+        "Page title passed to Base: 'Writing | Satvik Daga'",
+        "Wrapped in Base layout with Nav",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "blog/[slug].astro",
+      "description": "As a reader, I want to read individual blog posts with proper formatting so that the content is presented cleanly.",
+      "acceptanceCriteria": [
+        "src/pages/blog/[slug].astro generates static paths via getStaticPaths using non-draft blog collection entries only (draft excluded)",
+        "Uses Post.astro layout with backLabel='← all posts' and backHref='/blog'",
+        "Passes title, description, date, tags, readingTime (computed via getReadingTime(post.body)), and devToUrl to Post.astro",
+        "hello-world.mdx renders at /blog/hello-world with reading time and tag chips visible",
+        "Direct GET to /blog/draft-post returns 404 (draft not in getStaticPaths)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "projects/index.astro — Tag Filter",
+      "description": "As a recruiter, I want to filter projects by technology tag so that I can focus on projects relevant to a specific skill area.",
+      "acceptanceCriteria": [
+        "src/pages/projects/index.astro fetches all non-draft projects and renders as cards (same style as ProjectGrid: bg-bg-surface border border-stroke rounded-md p-6)",
+        "Each card has data-tags attribute with comma-separated lowercase tag list (e.g. data-tags='pytorch,python')",
+        "Tag filter buttons rendered above the grid — one button per unique tag across all projects",
+        "Clicking a tag button hides cards without that tag (.hidden toggled via vanilla JS <script>)",
+        "Active tag button: bg-bg-surface border-accent-blue; inactive: bg-bg-subtle border-stroke",
+        "Clicking the currently active tag again deselects it and shows all cards",
+        "No React, no Astro client directives — pure vanilla JS in a <script> tag",
+        "Page title passed to Base: 'Projects | Satvik Daga'",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "projects/[slug].astro",
+      "description": "As a visitor, I want to read detailed project writeups so that I can understand the technical depth behind each project.",
+      "acceptanceCriteria": [
+        "src/pages/projects/[slug].astro generates static paths via getStaticPaths using non-draft projects collection entries only",
+        "Uses Post.astro layout with backLabel='← all projects' and backHref='/projects'",
+        "Passes title, description, date, tags, and readingTime to Post.astro",
+        "If githubUrl present in frontmatter: renders 'GitHub ↗' link button in article header as text-accent-blue",
+        "If demoUrl present in frontmatter: renders 'Live demo ↗' link button in article header as text-accent-green",
+        "rag-eval.mdx renders at /projects/rag-eval",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "404.astro",
+      "description": "As a visitor who lands on a nonexistent URL, I want a clear error page so that I can navigate back to the site.",
+      "acceptanceCriteria": [
+        "src/pages/404.astro exists",
+        "Shows '404 — not found' heading in text-fg",
+        "Shows 'This page doesn't exist.' in text-fg-muted",
+        "Shows '← go home' link in text-accent-blue pointing to /",
+        "Wrapped in Base layout with Nav",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Favicon",
+      "description": "As a visitor, I want a recognizable browser tab icon so that the site feels polished and professional.",
+      "acceptanceCriteria": [
+        "public/favicon.svg created: 'sd.' text in JetBrains Mono font-face reference, fill='#58a6ff', on rect fill='#0d1117', viewBox='0 0 32 32'",
+        "public/favicon.ico present (can be a copy of favicon.svg renamed, or a minimal 16x16 ICO)",
+        "public/og-default.png present as a 1200x630 placeholder image (solid #0d1117 background with 'satvikdaga.com' text, or any valid PNG)",
+        "Base.astro <link rel='icon' href='/favicon.svg'> confirmed present",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "name": "Design Language — Vlad Burca | Product Designer & Design Systems Lead",
+  "modes": [
+    {
+      "name": "Default",
+      "variables": [
+        {
+          "name": "color/primary",
+          "type": "COLOR",
+          "value": {
+            "r": 0.8862745098039215,
+            "g": 0.8862745098039215,
+            "b": 0.9411764705882353,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/secondary",
+          "type": "COLOR",
+          "value": {
+            "r": 0,
+            "g": 0,
+            "b": 0.9333333333333333,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/accent",
+          "type": "COLOR",
+          "value": {
+            "r": 0.10196078431372549,
+            "g": 0.10196078431372549,
+            "b": 0.1803921568627451,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/background/default",
+          "type": "COLOR",
+          "value": {
+            "r": 0.10196078431372549,
+            "g": 0.10196078431372549,
+            "b": 0.1803921568627451,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/background/1",
+          "type": "COLOR",
+          "value": {
+            "r": 0.0392156862745098,
+            "g": 0.0392156862745098,
+            "b": 0.0784313725490196,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/background/2",
+          "type": "COLOR",
+          "value": {
+            "r": 0.1450980392156863,
+            "g": 0.1450980392156863,
+            "b": 0.25098039215686274,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/text/default",
+          "type": "COLOR",
+          "value": {
+            "r": 0.8862745098039215,
+            "g": 0.8862745098039215,
+            "b": 0.9411764705882353,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/text/1",
+          "type": "COLOR",
+          "value": {
+            "r": 0.41568627450980394,
+            "g": 0.41568627450980394,
+            "b": 0.5411764705882353,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/text/2",
+          "type": "COLOR",
+          "value": {
+            "r": 0.9098039215686274,
+            "g": 0.48627450980392156,
+            "b": 0.48627450980392156,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/text/3",
+          "type": "COLOR",
+          "value": {
+            "r": 0.5333333333333333,
+            "g": 0.5333333333333333,
+            "b": 0.6666666666666666,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "color/text/4",
+          "type": "COLOR",
+          "value": {
+            "r": 0.9098039215686274,
+            "g": 0.6588235294117647,
+            "b": 0.48627450980392156,
+            "a": 1
+          },
+          "scopes": [
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/4",
+          "type": "FLOAT",
+          "value": 4,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/8",
+          "type": "FLOAT",
+          "value": 8,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/12",
+          "type": "FLOAT",
+          "value": 12,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/16",
+          "type": "FLOAT",
+          "value": 16,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/20",
+          "type": "FLOAT",
+          "value": 20,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/24",
+          "type": "FLOAT",
+          "value": 24,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/28",
+          "type": "FLOAT",
+          "value": 28,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/32",
+          "type": "FLOAT",
+          "value": 32,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "spacing/40",
+          "type": "FLOAT",
+          "value": 40,
+          "scopes": [
+            "GAP",
+            "ALL_SCOPES"
+          ]
+        },
+        {
+          "name": "radius/sm",
+          "type": "FLOAT",
+          "value": 4,
+          "scopes": [
+            "CORNER_RADIUS"
+          ]
+        },
+        {
+          "name": "radius/md",
+          "type": "FLOAT",
+          "value": 8,
+          "scopes": [
+            "CORNER_RADIUS"
+          ]
+        },
+        {
+          "name": "radius/lg",
+          "type": "FLOAT",
+          "value": 12,
+          "scopes": [
+            "CORNER_RADIUS"
+          ]
+        },
+        {
+          "name": "radius/full",
+          "type": "FLOAT",
+          "value": 50,
+          "scopes": [
+            "CORNER_RADIUS"
+          ]
+        },
+        {
+          "name": "fontSize/36",
+          "type": "FLOAT",
+          "value": 36,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/27",
+          "type": "FLOAT",
+          "value": 27,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/21.06",
+          "type": "FLOAT",
+          "value": 21.06,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/18",
+          "type": "FLOAT",
+          "value": 18,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/16.2",
+          "type": "FLOAT",
+          "value": 16.2,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/15.3",
+          "type": "FLOAT",
+          "value": 15.3,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/14.4",
+          "type": "FLOAT",
+          "value": 14.4,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/9.9",
+          "type": "FLOAT",
+          "value": 9.9,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        },
+        {
+          "name": "fontSize/5.04",
+          "type": "FLOAT",
+          "value": 5.04,
+          "scopes": [
+            "FONT_SIZE"
+          ]
+        }
+      ]
+    }
+  ]
+}
