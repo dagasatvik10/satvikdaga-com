@@ -390,3 +390,25 @@
 
 - Static listing pages (index.astro) use top-level await getCollection() with no getStaticPaths — only dynamic [slug].astro pages need getStaticPaths
 - Title prop to Base.astro should be the short form ('Writing'), not the full title — Base appends '| Satvik Daga' automatically
+
+---
+
+## 2026-04-16T07:04:00Z - US-019
+
+**Implemented**
+
+- Created src/pages/blog/[slug].astro
+- getStaticPaths filters non-draft posts, passes full entry as prop (no second getCollection in page body)
+- readingTime computed via getReadingTime(post.body) — raw MDX body string available on every collection entry
+- post.render() called in frontmatter to get the Content component for <slot /> in Post.astro
+- draft-post excluded from getStaticPaths, so /blog/draft-post returns 404 naturally
+
+**Files Changed**
+
+- src/pages/blog/[slug].astro
+
+**Learnings**
+
+- getStaticPaths passes full collection entry as props to avoid a second getCollection call inside the page
+- post.body is the raw MDX source string — pass to getReadingTime() directly, no render step needed
+- Drafts excluded in getStaticPaths filter guarantee 404 for draft URLs — no additional redirect/config needed
