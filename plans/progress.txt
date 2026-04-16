@@ -259,3 +259,25 @@
 
 - Template literals using getTagColor return values are JIT-safe because tagColor.ts returns full static strings scanned by Tailwind
 - Two-tier fallback (featured → date-sorted) implemented with a conditional in frontmatter — no reactive state needed
+
+---
+
+## 2026-04-16T06:55:00Z - US-013
+
+**Implemented**
+
+- Created src/components/Experience.astro
+- Section label 'EXPERIENCE' uppercase text-accent-yellow text-[11px] tracking-widest
+- Imports experience array from src/data/experience.ts, maps with flex layout
+- Timeline dot: w-2 h-2 rounded-full bg-accent-blue (current) or bg-stroke (past) via conditional class
+- Company renders as <a href target=_blank rel=noopener text-accent-blue hover:underline> when url present; <span class="text-fg"> otherwise
+- title and period rendered as text-fg-muted
+
+**Files Changed**
+
+- src/components/Experience.astro
+
+**Learnings**
+
+- Plain TS data files (src/data/*.ts) import directly — no getCollection() needed
+- Conditional dot color driven by entry.current boolean — template literal in class attribute is JIT-safe because both resolved values are full static strings (bg-accent-blue / bg-stroke)
