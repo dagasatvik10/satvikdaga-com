@@ -54,3 +54,23 @@
 - Raw GitHub URLs for woff2: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-{weight}.woff2
 - font-display: swap prevents FOIT and is safe to add even though the PRD does not require it
 - Each @font-face must declare matching font-weight so the browser selects the correct file; without it the browser synthesizes bold from regular
+
+---
+
+## 2026-04-16T06:43:00Z - US-003
+
+**Implemented**
+
+- Created src/content/config.ts with blog and projects defineCollection + Zod schemas
+- blog schema: title, date (coerce), description, tags, draft (default false), devToUrl (optional)
+- projects schema: title, description, tags, date (coerce), githubUrl (optional), demoUrl (optional), featured (optional), draft (default false)
+
+**Files Changed**
+
+- src/content/config.ts
+
+**Learnings**
+
+- Use z.coerce.date() (not z.date()) for MDX frontmatter dates — coerces ISO strings to Date objects
+- src/content/ directory must exist for Astro to recognize content collections; no placeholder files needed
+- Build warns about no Tailwind utility classes when pages have no classes — expected until components are added
