@@ -412,3 +412,27 @@
 - getStaticPaths passes full collection entry as props to avoid a second getCollection call inside the page
 - post.body is the raw MDX source string — pass to getReadingTime() directly, no render step needed
 - Drafts excluded in getStaticPaths filter guarantee 404 for draft URLs — no additional redirect/config needed
+
+---
+
+## 2026-04-16T07:06:00Z - US-020
+
+**Implemented**
+
+- Created src/pages/projects/index.astro
+- Fetches all non-draft projects sorted by date descending (no featured filter — show all)
+- Derives unique sorted tag list via [...new Set(projects.flatMap(...))]
+- Renders tag filter buttons with data-tag attribute; cards with data-tags (comma-separated lowercase)
+- Vanilla JS <script> tracks activeTag: clicking active tag deselects and shows all; clicking new tag hides non-matching cards
+- classList.toggle(class, condition) used for clean active/inactive button state transitions
+
+**Files Changed**
+
+- src/pages/projects/index.astro
+
+**Learnings**
+
+- [...new Set(arr)] is the idiomatic TS pattern to deduplicate and convert back to array in one expression
+- classList.toggle(className, bool) is cleaner than add/remove pairs for conditional class toggling
+- data-tags stores comma-separated string; split(',') on client for O(1) per-tag membership check
+- Projects listing page uses top-level await getCollection() — no getStaticPaths needed (that's only for [slug].astro)
