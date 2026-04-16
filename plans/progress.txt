@@ -175,3 +175,23 @@
 - Tailwind opacity modifier (bg-bg/80) works with hex colors defined in extend.colors — Tailwind auto-converts to RGB channels
 - Astro <script> tag content runs client-side and is bundled at build time; no client: directive needed for vanilla JS
 - Use .nav-link class on mobile dropdown anchors to enable collective close-on-click listener without repeating event handlers
+
+---
+
+## 2026-04-16T06:50:00Z - US-009
+
+**Implemented**
+
+- Created src/components/Hero.astro
+- h1 for full name (text-fg), subtitle (text-fg-muted), tagline (text-fg)
+- Primary CTA '→ projects' → #projects with bg-accent-blue text-bg px-6 py-3 rounded-md
+- Secondary CTAs GitHub and LinkedIn with border border-stroke text-fg, target=_blank rel=noopener
+
+**Files Changed**
+
+- src/components/Hero.astro
+
+**Learnings**
+
+- Hero is a pure static component — no props, no frontmatter imports needed
+- text-bg works as a Tailwind utility because `bg` is defined as a color token in tailwind.config.mjs
