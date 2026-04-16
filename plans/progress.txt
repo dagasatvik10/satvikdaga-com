@@ -369,3 +369,24 @@
 - MDX files only need to be present in src/content/<collection>/ for getCollection() to find them — no registration required
 - Build warns about empty collections at the index.astro stage but succeeds; adding MDX files eliminates those warnings
 - draft: true in frontmatter does not generate a 404 page at build time; the route simply does not exist in the static output
+
+---
+
+## 2026-04-16T07:03:00Z - US-018
+
+**Implemented**
+
+- Created src/pages/blog/index.astro
+- Fetches all non-draft blog posts via getCollection, sorted by date descending (no slice)
+- Renders title (text-fg), date (text-fg-muted text-[14px]), description (text-fg-muted), tag chips with getTagColor
+- Page title 'Writing' passed to Base (renders as 'Writing | Satvik Daga')
+- Wrapped in Base + Nav, main content constrained to max-w-[720px] mx-auto px-6
+
+**Files Changed**
+
+- src/pages/blog/index.astro
+
+**Learnings**
+
+- Static listing pages (index.astro) use top-level await getCollection() with no getStaticPaths — only dynamic [slug].astro pages need getStaticPaths
+- Title prop to Base.astro should be the short form ('Writing'), not the full title — Base appends '| Satvik Daga' automatically
