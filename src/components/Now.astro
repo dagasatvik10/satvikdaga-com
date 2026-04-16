@@ -1,0 +1,19 @@
+---
+import { now } from '../data/now';
+---
+
+<section class="px-8 py-10">
+  <p class="uppercase text-accent-yellow text-[11px] tracking-widest mb-4">NOW</p>
+
+  <div class="bg-bg-surface border border-stroke rounded-md p-6">
+    <ul class="space-y-3 mb-4">
+      {now.items.map((item) => (
+        <li class="flex gap-3">
+          <span class="text-fg-muted">{item.label}:</span>
+          <span class={item.color}>{item.text}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="text-fg-muted text-[14px]">Updated {now.updatedAt}</p>
+  </div>
+</section>
