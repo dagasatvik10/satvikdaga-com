@@ -32,3 +32,25 @@
 
 - `astro check` prompts to install @astrojs/check if missing — add it to package.json directly to avoid interactive prompt
 - Build warns about no Tailwind utility classes when page has no classes — expected at this scaffold stage
+
+---
+
+## 2026-04-16T06:41:00Z - US-002
+
+**Implemented**
+
+- Downloaded JetBrains Mono woff2 files (Regular 400, SemiBold 600, Bold 700) from raw.githubusercontent.com to public/fonts/
+- Created src/styles/global.css with three @font-face declarations and body reset (font-family, background, color, margin)
+
+**Files Changed**
+
+- public/fonts/JetBrainsMono-Regular.woff2
+- public/fonts/JetBrainsMono-SemiBold.woff2
+- public/fonts/JetBrainsMono-Bold.woff2
+- src/styles/global.css
+
+**Learnings**
+
+- Raw GitHub URLs for woff2: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-{weight}.woff2
+- font-display: swap prevents FOIT and is safe to add even though the PRD does not require it
+- Each @font-face must declare matching font-weight so the browser selects the correct file; without it the browser synthesizes bold from regular
