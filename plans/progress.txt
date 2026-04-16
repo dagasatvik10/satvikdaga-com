@@ -1,0 +1,34 @@
+## Codebase Patterns
+
+- Tailwind spacing is defined under `theme.spacing` (replaces defaults), not `theme.extend.spacing`
+- Color tokens use `stroke`/`fg` naming to avoid Tailwind utility class collisions (`border-stroke`, `text-fg-muted`)
+- All Tailwind color classes in data files must be full strings (no template literals) — JIT purges dynamic expressions
+- `@astrojs/check` and `typescript` must be installed alongside the main deps for `npm run typecheck` to work
+- Minimal structure for typecheck: `src/env.d.ts`, `tsconfig.json` extending `astro/tsconfigs/strict`, one page
+
+---
+
+## 2026-04-16T06:40:00Z - US-001
+
+**Implemented**
+
+- Created package.json with astro, @astrojs/tailwind, @astrojs/mdx, tailwindcss, reading-time, @astrojs/check, typescript
+- Created astro.config.mjs with tailwind + mdx integrations, site/output set
+- Created tailwind.config.mjs with GitHub-dark palette, JetBrains Mono, 2px-base spacing under theme.spacing
+- Created tsconfig.json extending astro/tsconfigs/strict
+- Created src/env.d.ts with Astro type references
+- Created minimal src/pages/index.astro placeholder
+
+**Files Changed**
+
+- package.json
+- astro.config.mjs
+- tailwind.config.mjs
+- tsconfig.json
+- src/env.d.ts
+- src/pages/index.astro
+
+**Learnings**
+
+- `astro check` prompts to install @astrojs/check if missing — add it to package.json directly to avoid interactive prompt
+- Build warns about no Tailwind utility classes when page has no classes — expected at this scaffold stage
