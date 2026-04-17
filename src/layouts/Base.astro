@@ -39,8 +39,17 @@ const canonicalUrl = Astro.url.href;
       crossorigin
       href="/fonts/JetBrainsMono-Regular.woff2"
     />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/JetBrainsMono-Bold.woff2"
+    />
   </head>
   <body>
-    <slot />
+    <main>
+      <slot />
+    </main>
   </body>
 </html>

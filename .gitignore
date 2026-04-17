@@ -8,6 +8,9 @@ dist/
 # Superpowers brainstorm artifacts
 .superpowers/
 
+# Playwright MCP artifacts
+.playwright-mcp/
+
 # Environment
 .env
 .env.local

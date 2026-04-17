@@ -5,4 +5,7 @@ export default defineConfig({
   site: 'https://satvikdaga.com',
   output: 'static',
   integrations: [mdx()],
+  build: {
+    inlineStylesheets: 'always',
+  },
 });
