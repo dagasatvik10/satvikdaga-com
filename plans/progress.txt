@@ -42,3 +42,24 @@
 - Typecheck passes with Astro content collection entries when using `post.body || ''` fallback for potentially undefined body property
 - CSS variables are resolved at runtime, enabling dynamic theme switching without regenerating CSS
 
+
+## 2026-04-18T11:46:00.000Z - US-003
+
+**Implemented**
+
+- Added `<meta name="color-scheme" content="light dark">` to Base.astro head after charset
+- Added inline synchronous flash-prevention script using `is:inline` directive
+- Script checks localStorage first, then OS preference via matchMedia
+- Applies `.dark` class to document.documentElement when appropriate
+
+**Files Changed**
+
+- src/layouts/Base.astro
+
+**Learnings**
+
+- Astro's `is:inline` directive prevents script bundling and keeps execution synchronous
+- Scripts in `<head>` execute before first paint, preventing FOUC (Flash of Unstyled Content)
+- `color-scheme` meta tag tells browser which themes are available, enabling native UI theming
+- localStorage check takes priority over OS preference for better UX
+
