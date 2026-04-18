@@ -91,3 +91,27 @@
 - Separating sync logic into `syncAllToggles()` ensures all theme toggle instances stay synchronized when one is clicked
 - Data attributes (`data-theme-toggle`, `data-icon-*`) provide scoped element selection without global ID conflicts
 
+
+## 2026-04-18T11:49:00.000Z - US-005
+
+**Implemented**
+
+- Imported ThemeToggle.astro component in Nav.astro frontmatter
+- Added `<ThemeToggle />` as last item in desktop nav link row (after Contact link)
+- Added `<ThemeToggle />` at bottom of mobile drawer (after last nav link)
+- Exposed `closeMenu` function on `window` using `(window as any).closeMenu = closeMenu` to avoid TypeScript error
+- ThemeToggle appears in both desktop nav and mobile drawer
+- Clicking toggle in mobile drawer closes drawer and switches theme via `window.closeMenu()` call
+
+**Files Changed**
+
+- src/components/Nav.astro
+
+**Learnings**
+
+- Astro component imports go in the frontmatter block (between `---` lines)
+- Placing component inside `<li>` maintains semantic HTML structure and consistent flex spacing
+- Using `(window as any)` type assertion bypasses TypeScript error when extending Window interface inline
+- ThemeToggle's `syncAllToggles()` function ensures multiple instances stay synchronized when one is clicked
+- ThemeToggle already calls `window.closeMenu()` if available, making integration clean
+
