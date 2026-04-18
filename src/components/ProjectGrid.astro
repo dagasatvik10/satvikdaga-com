@@ -21,7 +21,7 @@ const projects = featuredProjects.length > 0
   ) : (
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {projects.map((project) => (
-        <div class="bg-bg-surface border border-stroke rounded-md p-6">
+        <a href={`/projects/${project.id}`} class="bg-bg-surface border border-stroke rounded-md p-6 block hover:border-fg-muted transition-colors">
           <p class="text-fg">{project.data.title}</p>
           <p class="text-fg-muted mt-2">{project.data.description}</p>
           <div class="flex flex-wrap gap-2 mt-4">
@@ -31,7 +31,7 @@ const projects = featuredProjects.length > 0
               </span>
             ))}
           </div>
-        </div>
+        </a>
       ))}
     </div>
   )}
