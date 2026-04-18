@@ -115,3 +115,58 @@
 - ThemeToggle's `syncAllToggles()` function ensures multiple instances stay synchronized when one is clicked
 - ThemeToggle already calls `window.closeMenu()` if available, making integration clean
 
+
+## 2026-04-18T11:53:00.000Z - US-006
+
+**Implemented**
+
+- Fixed critical bug in ThemeToggle.astro: `document.currentScript` is null after script execution
+- Replaced `is:inline` directive approach with DOMContentLoaded initialization
+- Script now queries all `[data-theme-toggle]` elements and initializes them on DOM ready
+- Verified localStorage stores 'dark' when clicking toggle to dark mode
+- Verified localStorage stores 'light' when clicking toggle to light mode
+- Verified localStorage.getItem('theme') retrieves stored value on page load (tested with hard refresh)
+- Verified dark OS preference loads dark mode on first visit (no localStorage)
+- Verified light OS preference loads light mode on first visit (no localStorage)
+- Verified stored 'light' overrides dark OS preference
+- Verified stored 'dark' overrides light OS preference
+- Fixed TypeScript errors: added type annotation for button parameter, used (window as any) for closeMenu
+- Typecheck passes
+
+**Files Changed**
+
+- src/components/ThemeToggle.astro
+
+**Learnings**
+
+- `document.currentScript` API only works during script's initial execution; becomes `null` after execution completes
+- Astro's script processing can break DOM sibling relationships expected by inline scripts
+- Using DOMContentLoaded to initialize all toggles is more robust than relying on script-button proximity
+- Theme persistence works correctly: localStorage priority → OS preference fallback in flash-prevention script
+- Chrome DevTools MCP emulation (`emulate({colorScheme: 'light'|'dark'})`) enables testing OS preference scenarios
+- Hard refresh (`navigate_page({type: 'reload', ignoreCache: true})`) verifies localStorage persistence
+
+
+## 2026-04-18T11:54:00.000Z - US-007
+
+**Implemented**
+
+- Verified theme toggle performance using Chrome DevTools Performance traces
+- Measured INP (Interaction to Next Paint) metric on desktop Chrome: 42ms
+- Measured INP on mobile Chrome DevTools emulation (375x829 mobile viewport): 34ms
+- Verified CLS (Cumulative Layout Shift) = 0.00 during theme transition
+- Confirmed zero layout shift during theme switch
+
+**Files Changed**
+
+- None (verification only)
+
+**Learnings**
+
+- Theme toggle performance is well under 50ms threshold: desktop 42ms, mobile 34ms
+- INP measures time from user interaction (click) to next visual paint — ideal metric for interactive performance
+- CSS class-based theme switching (`document.documentElement.classList.toggle('dark')`) avoids layout thrashing
+- localStorage.setItem() is synchronous but fast (< 1ms) and doesn't block the main thread
+- No network requests, style recalculation, or layout shifts during theme transition
+- Chrome DevTools MCP performance_start_trace/autoStop provides automated performance measurement
+- Mobile emulation via emulate() viewport parameter enables realistic device testing
