@@ -1,0 +1,506 @@
+## Codebase Patterns
+
+- Tailwind spacing is defined under `theme.spacing` (replaces defaults), not `theme.extend.spacing`
+- Color tokens use `stroke`/`fg` naming to avoid Tailwind utility class collisions (`border-stroke`, `text-fg-muted`)
+- All Tailwind color classes in data files must be full strings (no template literals) — JIT purges dynamic expressions
+- `@astrojs/check` and `typescript` must be installed alongside the main deps for `npm run typecheck` to work
+- Minimal structure for typecheck: `src/env.d.ts`, `tsconfig.json` extending `astro/tsconfigs/strict`, one page
+
+---
+
+## 2026-04-16T06:40:00Z - US-001
+
+**Implemented**
+
+- Created package.json with astro, @astrojs/tailwind, @astrojs/mdx, tailwindcss, reading-time, @astrojs/check, typescript
+- Created astro.config.mjs with tailwind + mdx integrations, site/output set
+- Created tailwind.config.mjs with GitHub-dark palette, JetBrains Mono, 2px-base spacing under theme.spacing
+- Created tsconfig.json extending astro/tsconfigs/strict
+- Created src/env.d.ts with Astro type references
+- Created minimal src/pages/index.astro placeholder
+
+**Files Changed**
+
+- package.json
+- astro.config.mjs
+- tailwind.config.mjs
+- tsconfig.json
+- src/env.d.ts
+- src/pages/index.astro
+
+**Learnings**
+
+- `astro check` prompts to install @astrojs/check if missing — add it to package.json directly to avoid interactive prompt
+- Build warns about no Tailwind utility classes when page has no classes — expected at this scaffold stage
+
+---
+
+## 2026-04-16T06:41:00Z - US-002
+
+**Implemented**
+
+- Downloaded JetBrains Mono woff2 files (Regular 400, SemiBold 600, Bold 700) from raw.githubusercontent.com to public/fonts/
+- Created src/styles/global.css with three @font-face declarations and body reset (font-family, background, color, margin)
+
+**Files Changed**
+
+- public/fonts/JetBrainsMono-Regular.woff2
+- public/fonts/JetBrainsMono-SemiBold.woff2
+- public/fonts/JetBrainsMono-Bold.woff2
+- src/styles/global.css
+
+**Learnings**
+
+- Raw GitHub URLs for woff2: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-{weight}.woff2
+- font-display: swap prevents FOIT and is safe to add even though the PRD does not require it
+- Each @font-face must declare matching font-weight so the browser selects the correct file; without it the browser synthesizes bold from regular
+
+---
+
+## 2026-04-16T06:43:00Z - US-003
+
+**Implemented**
+
+- Created src/content/config.ts with blog and projects defineCollection + Zod schemas
+- blog schema: title, date (coerce), description, tags, draft (default false), devToUrl (optional)
+- projects schema: title, description, tags, date (coerce), githubUrl (optional), demoUrl (optional), featured (optional), draft (default false)
+
+**Files Changed**
+
+- src/content/config.ts
+
+**Learnings**
+
+- Use z.coerce.date() (not z.date()) for MDX frontmatter dates — coerces ISO strings to Date objects
+- src/content/ directory must exist for Astro to recognize content collections; no placeholder files needed
+- Build warns about no Tailwind utility classes when pages have no classes — expected until components are added
+
+---
+
+## 2026-04-16T06:44:00Z - US-004
+
+**Implemented**
+
+- Created src/data/now.ts with 3 items (Building/Exploring/Writing) and updatedAt '2026-04-16'
+- Created src/data/experience.ts with 2 entries (Superpowers AI current, Fractal Analytics past)
+
+**Files Changed**
+
+- src/data/now.ts
+- src/data/experience.ts
+
+**Learnings**
+
+- Color values in data files must be full Tailwind class strings (e.g. 'text-accent-blue'), never template literals — Tailwind JIT purges dynamic expressions in production
+- Data directory (src/data/) does not need any index file; individual named exports work fine
+
+---
+
+## 2026-04-16T06:45:00Z - US-005
+
+**Implemented**
+
+- Created src/utils/tagColor.ts exporting getTagColor(tag: string): string
+- ML/AI tags set: python, pytorch, tensorflow, llm, ml, ai, rag, nlp, transformers, huggingface → 'text-accent-purple'
+- All other tags → 'text-accent-blue'
+
+**Files Changed**
+
+- src/utils/tagColor.ts
+
+**Learnings**
+
+- Full class strings ('text-accent-purple') must be returned — no template literals — so Tailwind JIT scans them from this file
+- Set lookup is O(1); preferred over array .includes() for per-tag calls inside list renders
+
+---
+
+## 2026-04-16T06:46:00Z - US-006
+
+**Implemented**
+
+- Created src/utils/readingTime.ts exporting getReadingTime(content: string): string
+- Wraps reading-time npm package, returns .text property (e.g. '3 min read')
+
+**Files Changed**
+
+- src/utils/readingTime.ts
+
+**Learnings**
+
+- reading-time default export returns an object; access .text for the human-readable string
+- Thin wrapper keeps external package import isolated to one file; consumers only import getReadingTime
+
+---
+
+## 2026-04-16T06:47:00Z - US-007
+
+**Implemented**
+
+- Created src/layouts/Base.astro with title, description, ogImage props
+- Imports global.css via frontmatter import (Astro idiomatic pattern)
+- Renders <title> as '{title} | Satvik Daga'
+- Renders og:title, og:description, og:image, og:url meta tags
+- favicon.svg link and font preload for Regular 400-weight only
+- <slot /> for page content injection
+
+**Files Changed**
+
+- src/layouts/Base.astro
+
+**Learnings**
+
+- Astro.url.href gives the full canonical URL at build time — use for og:url
+- CSS import in Astro frontmatter (import '../styles/global.css') gets bundled into page stylesheet; no runtime fetch
+- font preload requires crossorigin attribute even for same-origin fonts — browser fetches fonts via CORS mode; mismatched preload is ignored
+- Only preload the 400-weight font; other weights load on-demand when bold/semibold text renders
+
+---
+
+## 2026-04-16T06:49:00Z - US-008
+
+**Implemented**
+
+- Created src/components/Nav.astro with sticky nav, desktop links, mobile hamburger, dropdown, and vanilla JS toggle
+- bg-bg/80 opacity modifier works with hex color tokens — Tailwind v3 converts hex to RGB channels internally
+- Hamburger/X icons toggled via hidden class; same button position achieved by stacking both SVGs and hiding one at a time
+- Dropdown closes on X click, any .nav-link click, and ESC keydown
+
+**Files Changed**
+
+- src/components/Nav.astro
+
+**Learnings**
+
+- Tailwind opacity modifier (bg-bg/80) works with hex colors defined in extend.colors — Tailwind auto-converts to RGB channels
+- Astro <script> tag content runs client-side and is bundled at build time; no client: directive needed for vanilla JS
+- Use .nav-link class on mobile dropdown anchors to enable collective close-on-click listener without repeating event handlers
+
+---
+
+## 2026-04-16T06:50:00Z - US-009
+
+**Implemented**
+
+- Created src/components/Hero.astro
+- h1 for full name (text-fg), subtitle (text-fg-muted), tagline (text-fg)
+- Primary CTA '→ projects' → #projects with bg-accent-blue text-bg px-6 py-3 rounded-md
+- Secondary CTAs GitHub and LinkedIn with border border-stroke text-fg, target=_blank rel=noopener
+
+**Files Changed**
+
+- src/components/Hero.astro
+
+**Learnings**
+
+- Hero is a pure static component — no props, no frontmatter imports needed
+- text-bg works as a Tailwind utility because `bg` is defined as a color token in tailwind.config.mjs
+
+---
+
+## 2026-04-16T06:51:00Z - US-010
+
+**Implemented**
+
+- Created src/components/Now.astro
+- Section label 'NOW' uppercase text-accent-yellow text-[11px] tracking-widest
+- Card wrapper bg-bg-surface border border-stroke rounded-md p-6
+- Imports now from src/data/now.ts, maps items with class={item.color} (no template literals)
+- updatedAt displayed as text-fg-muted text-[14px]
+
+**Files Changed**
+
+- src/components/Now.astro
+
+**Learnings**
+
+- Astro .map() in JSX-like template returns array of VNodes natively — no wrapper needed
+- space-y-3 applies margin-top to all-but-first children using this project's 2px-base spacing (3 = 6px)
+
+---
+
+## 2026-04-16T06:52:00Z - US-011
+
+**Implemented**
+
+- Created src/components/RecentPosts.astro
+- Fetches non-draft blog posts via getCollection, sorted by date descending, sliced to 3
+- First post gets border-l-2 border-accent-blue; remaining get border-l-2 border-stroke via map index
+- 'all posts →' link to /blog styled text-accent-blue
+
+**Files Changed**
+
+- src/components/RecentPosts.astro
+
+**Learnings**
+
+- getCollection runs at build time inside Astro frontmatter; filter + sort + slice is pure static computation
+- map index (i === 0) cleanly drives per-item border color variation without extra state
+- date.toISOString().slice(0, 10) produces YYYY-MM-DD string from a Date object for display
+
+---
+
+## 2026-04-16T06:54:00Z - US-012
+
+**Implemented**
+
+- Created src/components/ProjectGrid.astro
+- Fetches non-draft projects; uses featured === true subset if any exist, else falls back to 4 most recent by date
+- 2-column grid: grid grid-cols-1 sm:grid-cols-2 gap-4
+- Tag chips use getTagColor from src/utils/tagColor.ts; full class strings passed to template literal (safe for JIT)
+- Empty state renders single placeholder card with 'projects coming soon' in text-fg-muted
+- 'all projects →' link to /projects as text-accent-blue
+
+**Files Changed**
+
+- src/components/ProjectGrid.astro
+
+**Learnings**
+
+- Template literals using getTagColor return values are JIT-safe because tagColor.ts returns full static strings scanned by Tailwind
+- Two-tier fallback (featured → date-sorted) implemented with a conditional in frontmatter — no reactive state needed
+
+---
+
+## 2026-04-16T06:55:00Z - US-013
+
+**Implemented**
+
+- Created src/components/Experience.astro
+- Section label 'EXPERIENCE' uppercase text-accent-yellow text-[11px] tracking-widest
+- Imports experience array from src/data/experience.ts, maps with flex layout
+- Timeline dot: w-2 h-2 rounded-full bg-accent-blue (current) or bg-stroke (past) via conditional class
+- Company renders as <a href target=_blank rel=noopener text-accent-blue hover:underline> when url present; <span class="text-fg"> otherwise
+- title and period rendered as text-fg-muted
+
+**Files Changed**
+
+- src/components/Experience.astro
+
+**Learnings**
+
+- Plain TS data files (src/data/*.ts) import directly — no getCollection() needed
+- Conditional dot color driven by entry.current boolean — template literal in class attribute is JIT-safe because both resolved values are full static strings (bg-accent-blue / bg-stroke)
+
+---
+
+## 2026-04-16T06:57:00Z - US-014
+
+**Implemented**
+
+- Created src/components/Contact.astro
+- Section label 'CONTACT' uppercase text-accent-yellow text-[11px] tracking-widest
+- Heading 'Let's talk.' as h2 text-fg text-2xl font-bold
+- Email link (mailto:) — no target/_blank needed for mailto
+- GitHub, LinkedIn, dev.to links with target=_blank rel=noopener text-accent-blue hover:underline
+
+**Files Changed**
+
+- src/components/Contact.astro
+
+**Learnings**
+
+- Contact is a pure static component — no props, no data imports; simplest component pattern in the codebase
+- mailto: links do not need target=_blank or rel=noopener — only http/https external links need those attributes
+
+---
+
+## 2026-04-16T07:00:00Z - US-015
+
+**Implemented**
+
+- Replaced placeholder src/pages/index.astro with full homepage assembly
+- Imports and renders Nav, Hero, Now, RecentPosts, ProjectGrid, Experience, Contact in order
+- Each content section wrapped in <section id="..."> matching nav anchor targets (now, writing, projects, experience, contact)
+- <hr class="border-t border-stroke-muted mx-8"> dividers between all sections
+- Wrapped in <Base title="Satvik Daga">
+
+**Files Changed**
+
+- src/pages/index.astro
+
+**Learnings**
+
+- Build warns about empty collections ("blog"/"projects" do not exist) — expected until US-017 adds sample MDX content; build still succeeds
+- Hero section does not need an id — it is the top of the page; nav anchor #projects links to the section wrapper
+- index.astro contains zero logic; all data fetching delegated to individual components (build-time execution)
+
+---
+
+## 2026-04-16T07:02:00Z - US-016
+
+**Implemented**
+
+- Created src/layouts/Post.astro accepting backLabel, backHref, title, description, date, tags, readingTime, devToUrl props
+- Wraps Base + Nav; article constrained to max-w-[720px] mx-auto px-6 py-12
+- Article header: back link (text-accent-blue), h1, date·readingTime·tag chips row, optional devToUrl note
+- Tag chips: bg-bg-subtle rounded-sm px-2 py-1 text-[12px] with getTagColor per tag
+- Footer contact strip: inline links (no Contact component heading) separated by border-t border-stroke-muted
+- <slot /> renders MDX body content
+
+**Files Changed**
+
+- src/layouts/Post.astro
+
+**Learnings**
+
+- Post.astro is a layout, not a component — it wraps MDX pages via <slot /> and is referenced by [slug].astro pages
+- Footer contact strip is intentionally inline (not reusing Contact.astro) because the component includes a section label/heading that doesn't belong in a post footer
+- date.toISOString().slice(0, 10) produces YYYY-MM-DD from the Zod-coerced Date object passed from frontmatter
+
+---
+
+## 2026-04-16T07:01:00Z - US-017
+
+**Implemented**
+
+- Created src/content/blog/hello-world.mdx with title, date (2026-04-16), description, tags ['llm', 'ai'], draft: false, 500+ word body
+- Created src/content/blog/draft-post.mdx with draft: true (no route generated)
+- Created src/content/projects/rag-eval.mdx with title, description, tags ['python', 'rag', 'llm'], date (2026-04-10), featured: true, draft: false, 600+ word body, githubUrl present
+
+**Files Changed**
+
+- src/content/blog/hello-world.mdx
+- src/content/blog/draft-post.mdx
+- src/content/projects/rag-eval.mdx
+
+**Learnings**
+
+- MDX files only need to be present in src/content/<collection>/ for getCollection() to find them — no registration required
+- Build warns about empty collections at the index.astro stage but succeeds; adding MDX files eliminates those warnings
+- draft: true in frontmatter does not generate a 404 page at build time; the route simply does not exist in the static output
+
+---
+
+## 2026-04-16T07:03:00Z - US-018
+
+**Implemented**
+
+- Created src/pages/blog/index.astro
+- Fetches all non-draft blog posts via getCollection, sorted by date descending (no slice)
+- Renders title (text-fg), date (text-fg-muted text-[14px]), description (text-fg-muted), tag chips with getTagColor
+- Page title 'Writing' passed to Base (renders as 'Writing | Satvik Daga')
+- Wrapped in Base + Nav, main content constrained to max-w-[720px] mx-auto px-6
+
+**Files Changed**
+
+- src/pages/blog/index.astro
+
+**Learnings**
+
+- Static listing pages (index.astro) use top-level await getCollection() with no getStaticPaths — only dynamic [slug].astro pages need getStaticPaths
+- Title prop to Base.astro should be the short form ('Writing'), not the full title — Base appends '| Satvik Daga' automatically
+
+---
+
+## 2026-04-16T07:04:00Z - US-019
+
+**Implemented**
+
+- Created src/pages/blog/[slug].astro
+- getStaticPaths filters non-draft posts, passes full entry as prop (no second getCollection in page body)
+- readingTime computed via getReadingTime(post.body) — raw MDX body string available on every collection entry
+- post.render() called in frontmatter to get the Content component for <slot /> in Post.astro
+- draft-post excluded from getStaticPaths, so /blog/draft-post returns 404 naturally
+
+**Files Changed**
+
+- src/pages/blog/[slug].astro
+
+**Learnings**
+
+- getStaticPaths passes full collection entry as props to avoid a second getCollection call inside the page
+- post.body is the raw MDX source string — pass to getReadingTime() directly, no render step needed
+- Drafts excluded in getStaticPaths filter guarantee 404 for draft URLs — no additional redirect/config needed
+
+---
+
+## 2026-04-16T07:06:00Z - US-020
+
+**Implemented**
+
+- Created src/pages/projects/index.astro
+- Fetches all non-draft projects sorted by date descending (no featured filter — show all)
+- Derives unique sorted tag list via [...new Set(projects.flatMap(...))]
+- Renders tag filter buttons with data-tag attribute; cards with data-tags (comma-separated lowercase)
+- Vanilla JS <script> tracks activeTag: clicking active tag deselects and shows all; clicking new tag hides non-matching cards
+- classList.toggle(class, condition) used for clean active/inactive button state transitions
+
+**Files Changed**
+
+- src/pages/projects/index.astro
+
+**Learnings**
+
+- [...new Set(arr)] is the idiomatic TS pattern to deduplicate and convert back to array in one expression
+- classList.toggle(className, bool) is cleaner than add/remove pairs for conditional class toggling
+- data-tags stores comma-separated string; split(',') on client for O(1) per-tag membership check
+- Projects listing page uses top-level await getCollection() — no getStaticPaths needed (that's only for [slug].astro)
+
+---
+
+## 2026-04-16T07:08:00Z - US-021
+
+**Implemented**
+
+- Created src/pages/projects/[slug].astro
+- getStaticPaths filters non-draft projects, passes full entry as prop
+- readingTime computed via getReadingTime(project.body) before render
+- Extended Post.astro with optional githubUrl and demoUrl props
+- Link buttons rendered in article header: githubUrl → text-accent-blue, demoUrl → text-accent-green
+- rag-eval.mdx renders at /projects/rag-eval
+
+**Files Changed**
+
+- src/pages/projects/[slug].astro
+- src/layouts/Post.astro
+
+**Learnings**
+
+- Post.astro is the single source of truth for article header rendering — extend it with optional props rather than duplicating header markup in page files
+- githubUrl/demoUrl link buttons use border border-stroke with hover border color variant for a CTA affordance consistent with Hero.astro secondary CTAs
+- project.body is available before render() — reading time can be computed without awaiting render
+
+---
+
+## 2026-04-16T07:10:00Z - US-022
+
+**Implemented**
+
+- Created src/pages/404.astro
+- h1 '404 — not found' styled text-fg text-2xl font-bold
+- Paragraph 'This page doesn't exist.' styled text-fg-muted
+- '← go home' link to / styled text-accent-blue hover:underline
+- Wrapped in Base layout with Nav; content in max-w-[720px] mx-auto px-6 py-12
+
+**Files Changed**
+
+- src/pages/404.astro
+
+**Learnings**
+
+- Astro treats src/pages/404.astro as a special file — outputs /404.html automatically, no config needed
+- 404.astro is a singleton (no getStaticPaths); simplest possible page pattern in the project
+
+---
+
+## 2026-04-16T07:12:00Z - US-023
+
+**Implemented**
+
+- Created public/favicon.svg: 32x32 viewBox, rect fill='#0d1117' rx=4, text 'sd.' centered at (16,22) fill='#58a6ff' JetBrains Mono Bold 14px, @font-face declared inside <defs><style>
+- Created public/og-default.png: 1200x630 solid #0d1117 PNG generated via Python stdlib (zlib+struct, no Pillow)
+- Created public/favicon.ico: copy of favicon.svg (PRD allows this; browser uses /favicon.svg via <link rel='icon'>)
+- Base.astro already had <link rel='icon' href='/favicon.svg'> at line 34 — no change needed
+
+**Files Changed**
+
+- public/favicon.svg
+- public/favicon.ico
+- public/og-default.png
+
+**Learnings**
+
+- Minimal valid PNG requires: 8-byte PNG signature + IHDR chunk + IDAT chunk (zlib-compressed filter-0 scanlines) + IEND chunk — Python stdlib (zlib, struct) is sufficient, no Pillow needed
+- SVG @font-face inside <defs><style> references local font paths; only renders correctly when served (not file://) since browser fetches the woff2 via the declared src URL
+- favicon.ico can be any valid file when a <link rel='icon' href='/favicon.svg'> is present — browsers use the explicit link; the .ico is only fetched if no link tag is found
