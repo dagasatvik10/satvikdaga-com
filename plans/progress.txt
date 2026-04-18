@@ -63,3 +63,31 @@
 - `color-scheme` meta tag tells browser which themes are available, enabling native UI theming
 - localStorage check takes priority over OS preference for better UX
 
+
+## 2026-04-18T11:48:00.000Z - US-004
+
+**Implemented**
+
+- Created ThemeToggle.astro component with button containing sun (13x13) and moon (13x24) SVG icons
+- Sun icon visible in dark mode via `dark:hidden` class, hidden in light mode
+- Moon icon hidden in dark mode via `hidden dark:block` class, visible in light mode
+- Label shows 'light' in dark mode, 'dark' in light mode using conditional hidden classes
+- Button styled with Tailwind: flex items-center gap-2 bg-bg-surface border border-stroke rounded text-fg-muted px-2 py-1 text-xs font-mono cursor-pointer hover:text-fg transition-colors
+- Added data attributes for scoped queries: data-theme-toggle, data-icon-sun, data-icon-moon, data-theme-label
+- Script uses `is:inline` directive to prevent Astro deduplication
+- Script queries elements via `document.currentScript.previousElementSibling.querySelector()` for scoped queries (no id attributes)
+- Click handler toggles `.dark` class on document.documentElement, persists to localStorage, syncs all toggle instances, calls window.closeMenu() if available
+- syncUI() function aligns icon/label with current theme on load by checking document.documentElement.classList.contains('dark')
+- syncAllToggles() ensures all toggle instances stay synchronized when one is clicked
+
+**Files Changed**
+
+- src/components/ThemeToggle.astro
+
+**Learnings**
+
+- Tailwind's `dark:` prefix with `hidden` class creates visibility toggles that align with the `.dark` class on `<html>`
+- Using `document.currentScript.previousElementSibling.querySelector()` prevents ID pollution and allows multiple component instances
+- Separating sync logic into `syncAllToggles()` ensures all theme toggle instances stay synchronized when one is clicked
+- Data attributes (`data-theme-toggle`, `data-icon-*`) provide scoped element selection without global ID conflicts
+
