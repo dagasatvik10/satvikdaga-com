@@ -21,3 +21,24 @@
 - Variable naming `--color-*` pattern matches Tailwind color token structure
 - Using `:root` for default theme and `.dark` class for theme switch follows CSS cascade best practices
 
+
+## 2026-04-18T11:45:00.000Z - US-002
+
+**Implemented**
+
+- Added `darkMode: 'class'` configuration to tailwind.config.mjs
+- Updated all 12 color tokens to use `rgb(var(--color-*) / <alpha-value>)` format
+- Fixed pre-existing type errors in blog and project pages (post.body / project.body undefined handling)
+
+**Files Changed**
+
+- tailwind.config.mjs
+- src/pages/blog/[slug].astro
+- src/pages/projects/[slug].astro
+
+**Learnings**
+
+- Tailwind's `<alpha-value>` placeholder enables opacity modifiers: `bg-bg/80` generates `rgb(var(--color-bg) / .8)`
+- Typecheck passes with Astro content collection entries when using `post.body || ''` fallback for potentially undefined body property
+- CSS variables are resolved at runtime, enabling dynamic theme switching without regenerating CSS
+

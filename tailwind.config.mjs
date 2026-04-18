@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     spacing: {
@@ -22,18 +23,18 @@ export default {
     },
     extend: {
       colors: {
-        bg: '#0d1117',
-        'bg-surface': '#161b22',
-        'bg-subtle': '#21262d',
-        stroke: '#30363d',
-        'stroke-muted': '#21262d',
-        fg: '#e6edf3',
-        'fg-muted': '#8b949e',
-        'accent-blue': '#58a6ff',
-        'accent-green': '#3fb950',
-        'accent-purple': '#bc8cff',
-        'accent-yellow': '#d29922',
-        'accent-red': '#f85149',
+        bg: 'rgb(var(--color-bg) / <alpha-value>)',
+        'bg-surface': 'rgb(var(--color-bg-surface) / <alpha-value>)',
+        'bg-subtle': 'rgb(var(--color-bg-subtle) / <alpha-value>)',
+        stroke: 'rgb(var(--color-stroke) / <alpha-value>)',
+        'stroke-muted': 'rgb(var(--color-stroke-muted) / <alpha-value>)',
+        fg: 'rgb(var(--color-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--color-fg-muted) / <alpha-value>)',
+        'accent-blue': 'rgb(var(--color-accent-blue) / <alpha-value>)',
+        'accent-green': 'rgb(var(--color-accent-green) / <alpha-value>)',
+        'accent-purple': 'rgb(var(--color-accent-purple) / <alpha-value>)',
+        'accent-yellow': 'rgb(var(--color-accent-yellow) / <alpha-value>)',
+        'accent-red': 'rgb(var(--color-accent-red) / <alpha-value>)',
       },
     },
   },

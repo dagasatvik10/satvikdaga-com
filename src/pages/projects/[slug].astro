@@ -15,7 +15,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 const { title, description, date, tags, githubUrl, demoUrl } = project.data;
-const readingTime = getReadingTime(project.body);
+const readingTime = getReadingTime(project.body || '');
 ---
 
 <Post
