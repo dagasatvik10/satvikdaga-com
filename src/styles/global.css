@@ -26,9 +26,39 @@
   font-display: swap;
 }
 
+:root {
+  --color-bg: 250 250 248;
+  --color-bg-surface: 240 237 232;
+  --color-bg-subtle: 232 228 221;
+  --color-stroke: 212 207 200;
+  --color-stroke-muted: 232 228 221;
+  --color-fg: 26 24 20;
+  --color-fg-muted: 107 101 96;
+  --color-accent-blue: 192 122 58;
+  --color-accent-green: 45 122 58;
+  --color-accent-purple: 124 92 191;
+  --color-accent-yellow: 160 96 16;
+  --color-accent-red: 192 57 43;
+}
+
+.dark {
+  --color-bg: 13 17 23;
+  --color-bg-surface: 22 27 34;
+  --color-bg-subtle: 33 38 45;
+  --color-stroke: 48 54 61;
+  --color-stroke-muted: 33 38 45;
+  --color-fg: 230 237 243;
+  --color-fg-muted: 139 148 158;
+  --color-accent-blue: 88 166 255;
+  --color-accent-green: 63 185 80;
+  --color-accent-purple: 188 140 255;
+  --color-accent-yellow: 210 153 34;
+  --color-accent-red: 248 81 73;
+}
+
 body {
   font-family: 'JetBrains Mono', monospace;
-  background: #0d1117;
-  color: #e6edf3;
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-fg));
   margin: 0;
 }

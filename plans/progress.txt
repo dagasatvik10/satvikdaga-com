@@ -1,3 +1,23 @@
 ## Codebase Patterns
 
 ---
+
+## 2026-04-18T11:44:00.000Z - US-001
+
+**Implemented**
+
+- Defined CSS custom properties for both light (Warm Paper) and dark (GitHub Dark) themes
+- Added `:root` block with 12 color token variables as RGB triplets for light mode
+- Added `.dark` class block with 12 color token variables as RGB triplets for dark mode
+- Updated body rule to use `rgb(var(--color-bg))` and `rgb(var(--color-fg))`
+
+**Files Changed**
+
+- src/styles/global.css
+
+**Learnings**
+
+- CSS custom properties using RGB triplets (not hex) enable Tailwind's opacity modifiers: `rgb(var(--color) / <alpha-value>)`
+- Variable naming `--color-*` pattern matches Tailwind color token structure
+- Using `:root` for default theme and `.dark` class for theme switch follows CSS cascade best practices
+
