@@ -21,7 +21,20 @@ const canonicalUrl = Astro.url.href;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script is:inline>
+      (function () {
+        const storedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = storedTheme === 'dark' || (!storedTheme && prefersDark);
+
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
