@@ -49,59 +49,68 @@
   <span data-theme-label class="hidden dark:hidden">dark</span>
 </button>
 
-<script is:inline>
+<script>
   (function() {
-    const script = document.currentScript;
-    const button = script.previousElementSibling.querySelector('[data-theme-toggle]');
-    const sunIcon = script.previousElementSibling.querySelector('[data-icon-sun]');
-    const moonIcon = script.previousElementSibling.querySelector('[data-icon-moon]');
-    const label = script.previousElementSibling.querySelector('[data-theme-label]');
+    // Initialize all theme toggles on the page
+    function initThemeToggle(button: Element) {
+      if (!(button instanceof HTMLElement)) return;
+      const sunIcon = button.querySelector('[data-icon-sun]');
+      const moonIcon = button.querySelector('[data-icon-moon]');
+      const label = button.querySelector('[data-theme-label]');
 
-    function syncUI() {
-      const isDark = document.documentElement.classList.contains('dark');
-      if (sunIcon) {
-        sunIcon.classList.toggle('hidden', !isDark);
+      function syncUI() {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (sunIcon) {
+          sunIcon.classList.toggle('hidden', !isDark);
+        }
+        if (moonIcon) {
+          moonIcon.classList.toggle('hidden', isDark);
+        }
+        if (label) {
+          label.textContent = isDark ? 'light' : 'dark';
+        }
       }
-      if (moonIcon) {
-        moonIcon.classList.toggle('hidden', isDark);
-      }
-      if (label) {
-        label.textContent = isDark ? 'light' : 'dark';
-      }
-    }
 
-    function syncAllToggles() {
-      document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
-        const sun = toggle.querySelector('[data-icon-sun]');
-        const moon = toggle.querySelector('[data-icon-moon]');
-        const label = toggle.querySelector('[data-theme-label]');
+      button.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
 
-        if (sun) sun.classList.toggle('hidden', !document.documentElement.classList.contains('dark'));
-        if (moon) moon.classList.toggle('hidden', document.documentElement.classList.contains('dark'));
-        if (label) label.textContent = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        if (isDark) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        }
+
+        // Sync all toggles
+        document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
+          const sun = toggle.querySelector('[data-icon-sun]');
+          const moon = toggle.querySelector('[data-icon-moon]');
+          const lbl = toggle.querySelector('[data-theme-label]');
+
+          if (sun) sun.classList.toggle('hidden', !document.documentElement.classList.contains('dark'));
+          if (moon) moon.classList.toggle('hidden', document.documentElement.classList.contains('dark'));
+          if (lbl) lbl.textContent = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        });
+
+        // Close mobile menu if available
+        if (typeof (window as any).closeMenu === 'function') {
+          (window as any).closeMenu();
+        }
       });
+
+      // Sync UI on load
+      syncUI();
     }
 
-    button?.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
-
-      if (isDark) {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
-
-      syncAllToggles();
-
-      // Close mobile menu if available
-      if (typeof window.closeMenu === 'function') {
-        window.closeMenu();
-      }
-    });
-
-    // Sync UI on load
-    syncUI();
+    // Initialize all theme toggles on DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-toggle]').forEach(initThemeToggle);
+      });
+    } else {
+      // DOM is already ready
+      document.querySelectorAll('[data-theme-toggle]').forEach(initThemeToggle);
+    }
   })();
 </script>
